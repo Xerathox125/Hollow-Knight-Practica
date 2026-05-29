@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f5159e19c6f4169488215752cd66bd46
+guid: b0e7d72efcd5e2647a0efdae6ea8d2ef
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2655218403376278291
-    second: Grid1 (1)_0
+      213: -7041725233380963396
+    second: BGrid1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Grid1 (1)_0
+      name: BGrid1_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 250
-        height: 250
+        width: 1000
+        height: 1000
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: de45da91ee4c62bd0800000000000000
-      internalID: -2655218403376278291
+      spriteID: cbb4c6a7534c64e90800000000000000
+      internalID: -7041725233380963396
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Grid1 (1)_0: -2655218403376278291
+      BGrid1_0: -7041725233380963396
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
