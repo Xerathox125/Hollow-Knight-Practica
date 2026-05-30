@@ -4,15 +4,34 @@ public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
     public float vel;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private Controles controles;
+
+    void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        controles = new Controles();
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        rb.linearVelocity = new Vector2(Input.GetAxis("Horizontal") * vel, rb.linearVelocity.y);
+        Move();
+    }
+
+    private void OnEnable()
+    {
+        controles.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controles.Disable();    
+    }
+
+
+    private void Move()
+    {
+        Vector2 move = controles.Player.Move.ReadValue<Vector2>();
+
+        rb.linearVelocity = new Vector2(move.x * vel, rb.linearVelocity.y);
     }
 }
