@@ -2,19 +2,33 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private Rigidbody2D rb;
-    public float vel;
-    private Controles controles;
+    //COMPONENTES
+    [HideInInspector] public Rigidbody2D rb;
+    public Animator animPlayer;
+    public Controles controles;
+
+    //VARIABLES
+    public float speed;
+
+    //MECÁNICAS
+    [HideInInspector] public PlayerMovement playerMovement;
 
     void Awake()
     {
+        //COMPONENTES
         rb = GetComponent<Rigidbody2D>();
+        animPlayer = GetComponentInChildren<Animator>();
         controles = new Controles();
+
+        //CONECTAR MECÁNICAS
+        playerMovement = GetComponent<PlayerMovement>();      
     }
 
     void FixedUpdate()
     {
-        Move();
+        playerMovement.Move(); //MOVIMIENDO
+        //SALTO
+        //AGACHARSE
     }
 
     private void OnEnable()
@@ -27,11 +41,5 @@ public class PlayerController : MonoBehaviour
         controles.Disable();    
     }
 
-
-    private void Move()
-    {
-        Vector2 move = controles.Player.Move.ReadValue<Vector2>();
-
-        rb.linearVelocity = new Vector2(move.x * vel, rb.linearVelocity.y);
-    }
+    
 }
