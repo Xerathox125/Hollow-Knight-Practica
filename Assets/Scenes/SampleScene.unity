@@ -224,7 +224,7 @@ GameObject:
   - component: {fileID: 99924038}
   - component: {fileID: 99924037}
   - component: {fileID: 99924036}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Tilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3492,8 +3492,10 @@ GameObject:
   - component: {fileID: 550543006}
   - component: {fileID: 550543005}
   - component: {fileID: 550543004}
+  - component: {fileID: 550543009}
   - component: {fileID: 550543007}
   - component: {fileID: 550543008}
+  - component: {fileID: 550543010}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -3596,7 +3598,9 @@ MonoBehaviour:
   rb: {fileID: 0}
   animPlayer: {fileID: 0}
   speed: 7.5
-  playerMovement: {fileID: 0}
+  updateAnimsPlayer: {fileID: 0}
+  movement: {fileID: 0}
+  jump: {fileID: 0}
 --- !u!114 &550543008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3609,6 +3613,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66d8340188b35d74aafb1df7505c05f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
+--- !u!114 &550543009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550543003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c296da9b36ad5f449404c11a38ed832, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpdateAnimsPlayer
+--- !u!114 &550543010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550543003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9da50fa298c6aca4abe97463652525b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerJump
+  jumpForce: 7.5
+  groundRadius: 0.05
+  groundCheckDistance: 0.75
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &564380786
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -13,6 +15,7 @@ public class PlayerController : MonoBehaviour
     //MECÁNICAS
     [HideInInspector] public UpdateAnimsPlayer updateAnimsPlayer;
     [HideInInspector] public PlayerMovement movement;
+    [HideInInspector] public PlayerJump jump;
 
     void Awake()
     {
@@ -23,7 +26,8 @@ public class PlayerController : MonoBehaviour
 
         //CONECTAR MECÁNICAS
         updateAnimsPlayer = GetComponent<UpdateAnimsPlayer>();
-        movement = GetComponent<PlayerMovement>();      
+        movement = GetComponent<PlayerMovement>();
+        jump = GetComponentInChildren<PlayerJump>();
     }
 
     void FixedUpdate()
@@ -41,12 +45,18 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         controles.Enable();
-    }
+        controles.Player.Jump.performed += OnJump;
+    }    
 
     private void OnDisable()
     {
+        controles.Player.Jump.performed -= OnJump;
         controles.Disable();    
     }
 
-    
+    private void OnJump(InputAction.CallbackContext context)
+    {
+        jump.OnUpdate();
+    }
+
 }
