@@ -4,14 +4,15 @@ public class PlayerController : MonoBehaviour
 {
     //COMPONENTES
     [HideInInspector] public Rigidbody2D rb;
-    public Animator animPlayer;
+    [HideInInspector] public Animator animPlayer;
     public Controles controles;
 
     //VARIABLES
     public float speed;
 
     //MECÁNICAS
-    [HideInInspector] public PlayerMovement playerMovement;
+    [HideInInspector] public UpdateAnimsPlayer updateAnimsPlayer;
+    [HideInInspector] public PlayerMovement movement;
 
     void Awake()
     {
@@ -21,14 +22,20 @@ public class PlayerController : MonoBehaviour
         controles = new Controles();
 
         //CONECTAR MECÁNICAS
-        playerMovement = GetComponent<PlayerMovement>();      
+        updateAnimsPlayer = GetComponent<UpdateAnimsPlayer>();
+        movement = GetComponent<PlayerMovement>();      
     }
 
     void FixedUpdate()
     {
-        playerMovement.Move(); //MOVIMIENDO
+        movement.Move(); //MOVIMIENDO
         //SALTO
         //AGACHARSE
+    }
+
+    private void Update()
+    {
+        updateAnimsPlayer.UpdateAnimation();
     }
 
     private void OnEnable()
