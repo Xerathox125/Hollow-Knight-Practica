@@ -8,6 +8,7 @@ public class PlayerJump : MonoBehaviour
     public float groundRadius;
     public float groundCheckDistance;
     public LayerMask groundMask;
+    public float jumpRelease;
     private bool isGrounded;
 
     //Getters
@@ -23,8 +24,7 @@ public class PlayerJump : MonoBehaviour
 
     public void OnUpdate()
     {
-        //CheckGround();
-        Jump();
+        CheckGround();
     }
 
     public void CheckGround()
@@ -42,11 +42,19 @@ public class PlayerJump : MonoBehaviour
         }
     }
 
-    private void Jump()
+    public void JumpHold()
     {
         if (isGrounded)         
-            playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, jumpForce);
-               
+            playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, jumpForce);               
+    }
+
+    public void JumpRelease()
+    {
+        // Si el jugador está subiendo (saltando) y suelta la tecla, reducir la fuerza de salto
+        if (playerController.rb.linearVelocity.y > 0)
+        {
+            playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, playerController.rb.linearVelocity.y * jumpRelease);
+        }
     }
 
     private void OnDrawGizmos()

@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         movement.Move(); //MOVIMIENDO
-        jump.CheckGround();
+        jump.OnUpdate();
         //SALTO
         //AGACHARSE
     }
@@ -46,18 +46,28 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         controles.Enable();
-        controles.Player.Jump.performed += OnJump;
-    }    
 
+        controles.Player.Jump.performed += OnJump;
+        controles.Player.Jump.canceled += OnJumpRelease;
+    }
+
+   
     private void OnDisable()
     {
         controles.Player.Jump.performed -= OnJump;
-        controles.Disable();    
+        controles.Disable();
+        controles.Player.Jump.canceled -= OnJumpRelease;
     }
 
     private void OnJump(InputAction.CallbackContext context)
     {
-        jump.OnUpdate();
+        jump.JumpHold();
     }
+
+    private void OnJumpRelease(InputAction.CallbackContext context)
+    {
+        jump.JumpRelease(); //posible cambio
+    }
+
 
 }
