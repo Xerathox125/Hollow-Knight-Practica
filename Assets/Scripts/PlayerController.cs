@@ -9,8 +9,13 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public Animator animPlayer;
     public Controles controles;
 
-    //VARIABLES
+
+    [Header("Variables Movimiento")]    
     public float speed;
+
+    [Header("Variables de Salto")]
+    public float normalGravity = 2f;
+    public float fallGravity = 4f;
 
     //MECÁNICAS
     [HideInInspector] public UpdateAnimsPlayer updateAnimsPlayer;
