@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         movement.Move(); //MOVIMIENDO
+        jump.CheckGround();
         //SALTO
         //AGACHARSE
     }

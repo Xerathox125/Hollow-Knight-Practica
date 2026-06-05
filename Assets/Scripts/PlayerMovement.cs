@@ -6,7 +6,6 @@ public class PlayerMovement : MonoBehaviour
     private bool isFacingRight = true;
     private bool isMoving;
 
-
     private void Awake()
     {
         playerController = GetComponent<PlayerController>();

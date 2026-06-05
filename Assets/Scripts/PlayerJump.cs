@@ -10,6 +10,12 @@ public class PlayerJump : MonoBehaviour
     public LayerMask groundMask;
     private bool isGrounded;
 
+    //Getters
+    public bool IsGrounded
+    {
+        get { return isGrounded; }
+    }
+
     public void Awake()
     {
         playerController = GetComponent<PlayerController>();
@@ -17,11 +23,11 @@ public class PlayerJump : MonoBehaviour
 
     public void OnUpdate()
     {
-        CheckGround();
+        //CheckGround();
         Jump();
     }
 
-    private void CheckGround()
+    public void CheckGround()
     {
         RaycastHit2D hit = Physics2D.CircleCast(transform.position, groundRadius, Vector2.down, groundCheckDistance, groundMask);
 
