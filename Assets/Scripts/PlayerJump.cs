@@ -3,7 +3,8 @@ using UnityEngine;
 public class PlayerJump : MonoBehaviour
 {
     private PlayerController playerController;
-    [Header(("Variables Salto"))]
+
+    [Header("Variables Salto")]
     public float jumpForce;
     public float groundRadius;
     public float groundCheckDistance;
@@ -20,11 +21,7 @@ public class PlayerJump : MonoBehaviour
     public float bufferJumpTime;
     public float bufferJumpCounter;
 
-    //Getters
-    public bool IsGrounded
-    {
-        get { return isGrounded; }
-    }
+    public bool IsGrounded => isGrounded;
 
     public void Awake()
     {
@@ -39,23 +36,16 @@ public class PlayerJump : MonoBehaviour
 
     public void CheckGround()
     {
+        // OPTIMIZACIÓN: Asignación directa sin if/else
         RaycastHit2D hit = Physics2D.CircleCast(transform.position, groundRadius, Vector2.down, groundCheckDistance, groundMask);
-
-        // Verificar si el circleCast está en contacto con el layer Ground
-        if (hit.collider != null) 
-        {
-            isGrounded = true;
-        }
-        else
-        {
-            isGrounded = false;
-        }
+        isGrounded = hit.collider != null;
     }
 
-    //Se encarga de actualizar las mejoras del salto; gravedad dinámica, coyote time y buffer jump
     public void JumpUpdates()
     {
-        //Este if else verifica el coyote time 
+        // OPTIMIZACIÓN: Cachear la velocidad para evitar múltiples llamadas al motor de físicas
+        Vector2 currentVel = playerController.rb.linearVelocity;
+
         if (isGrounded)
         {
             coyoteCounter = coyoteTime;
@@ -66,61 +56,55 @@ public class PlayerJump : MonoBehaviour
             coyoteCounter -= Time.deltaTime;
         }
 
-        //Este if verifica el buffer jump time 
         if (bufferJumpCounter > 0)
         {
             bufferJumpCounter -= Time.deltaTime;
 
-            //Si tocamos el suelo y hay un buffer mayor que 0, saltamos automáticamente
             if (isGrounded)
             {
-                playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, jumpForce);
-                //Ajustar la gravedad normal para el personaje
+                currentVel.y = jumpForce;
                 playerController.rb.gravityScale = playerController.normalGravity;
-                coyoteCounter = 0; // Reiniciar el contador de coyote time al saltar
-                bufferJumpCounter = 0; // Reiniciar el contador de buffer jump al saltar
+                coyoteCounter = 0;
+                bufferJumpCounter = 0;
 
-                // NUEVO: Si el jugador ya no está presionando el botón en el frame de aterrizaje, cortamos el salto inmediatamente
                 if (!playerController.isJumpHeld)
                 {
-                    playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, playerController.rb.linearVelocity.y * jumpRelease);
+                    currentVel.y *= jumpRelease;
                     playerController.rb.gravityScale = playerController.fallGravity;
                 }
-
             }
         }
-     
 
-
-        //Este if else actualiza  la gravedad dinámica del personaje
         if (isGrounded)
         {
             playerController.rb.gravityScale = playerController.normalGravity;
         }
-        else if (playerController.rb.linearVelocity.y < -0.1f)
+        else if (currentVel.y < -0.1f) // Usa la variable cacheada
         {
             playerController.rb.gravityScale = playerController.fallGravity;
         }
+
+        // Aplicar la velocidad final una única vez
+        playerController.rb.linearVelocity = currentVel;
     }
 
     public void JumpHold()
     {
-        if ((isGrounded || coyoteCounter > 0) && !hasJumped) {  
+        if ((isGrounded || coyoteCounter > 0) && !hasJumped)
+        {
             playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, jumpForce);
-            //Ajustar la gravedad normal para el personaje
             playerController.rb.gravityScale = playerController.normalGravity;
-            coyoteCounter = 0; // Reiniciar el contador de coyote time al saltar
+            coyoteCounter = 0;
             hasJumped = true;
         }
         else
         {
-            bufferJumpCounter = bufferJumpTime; // Damos margen de tiempo para el buffer jump
+            bufferJumpCounter = bufferJumpTime;
         }
     }
 
     public void JumpRelease()
     {
-        // Si el jugador está subiendo (saltando) y suelta la tecla, reducir la fuerza de salto
         if (playerController.rb.linearVelocity.y > 0)
         {
             playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, playerController.rb.linearVelocity.y * jumpRelease);
@@ -131,14 +115,8 @@ public class PlayerJump : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if(isGrounded)        
-            Gizmos.color = Color.green;        
-        else        
-            Gizmos.color = Color.red;
-        
-
+        Gizmos.color = isGrounded ? Color.green : Color.red;
         Vector3 checkPosition = transform.position + Vector3.down * groundCheckDistance;
         Gizmos.DrawWireSphere(checkPosition, groundRadius);
-
     }
 }

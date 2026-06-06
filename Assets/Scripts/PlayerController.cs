@@ -4,20 +4,19 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    //COMPONENTES
+    // COMPONENTES
     [HideInInspector] public Rigidbody2D rb;
     [HideInInspector] public Animator animPlayer;
     public Controles controles;
 
-
-    [Header("Variables Movimiento")]    
+    [Header("Variables Movimiento")]
     public float speed;
 
     [Header("Variables de Salto")]
     public float normalGravity = 2f;
     public float fallGravity = 4f;
 
-    //MECÁNICAS
+    // MECÁNICAS
     [HideInInspector] public UpdateAnimsPlayer updateAnimsPlayer;
     [HideInInspector] public PlayerMovement movement;
     [HideInInspector] public PlayerJump jump;
@@ -25,12 +24,10 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
-        //COMPONENTES
         rb = GetComponent<Rigidbody2D>();
         animPlayer = GetComponentInChildren<Animator>();
         controles = new Controles();
 
-        //CONECTAR MECÁNICAS
         updateAnimsPlayer = GetComponent<UpdateAnimsPlayer>();
         movement = GetComponent<PlayerMovement>();
         jump = GetComponentInChildren<PlayerJump>();
@@ -38,9 +35,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        movement.Move(); //MOVIMIENDO
-        //SALTO
-        //AGACHARSE
+        movement.Move();
     }
 
     private void Update()
@@ -52,12 +47,10 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         controles.Enable();
-
         controles.Player.Jump.performed += OnJump;
         controles.Player.Jump.canceled += OnJumpRelease;
     }
 
-   
     private void OnDisable()
     {
         controles.Player.Jump.performed -= OnJump;
@@ -74,8 +67,6 @@ public class PlayerController : MonoBehaviour
     private void OnJumpRelease(InputAction.CallbackContext context)
     {
         isJumpHeld = false;
-        jump.JumpRelease(); //posible cambio
+        jump.JumpRelease();
     }
-
-
 }
