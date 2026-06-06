@@ -3619,6 +3619,7 @@ MonoBehaviour:
   updateAnimsPlayer: {fileID: 0}
   movement: {fileID: 0}
   jump: {fileID: 0}
+  isJumpHeld: 0
 --- !u!114 &550543008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3656,8 +3657,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerJump
   jumpForce: 12
-  groundRadius: 0.02
-  groundCheckDistance: 0.76
+  groundRadius: 0.2
+  groundCheckDistance: 0.577
   groundMask:
     serializedVersion: 2
     m_Bits: 128

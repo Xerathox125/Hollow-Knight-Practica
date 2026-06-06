@@ -69,7 +69,7 @@ public class PlayerJump : MonoBehaviour
         //Este if verifica el buffer jump time 
         if (bufferJumpCounter > 0)
         {
-            bufferJumpCounter -= Time.fixedDeltaTime;
+            bufferJumpCounter -= Time.deltaTime;
 
             //Si tocamos el suelo y hay un buffer mayor que 0, saltamos automáticamente
             if (isGrounded)
@@ -79,6 +79,13 @@ public class PlayerJump : MonoBehaviour
                 playerController.rb.gravityScale = playerController.normalGravity;
                 coyoteCounter = 0; // Reiniciar el contador de coyote time al saltar
                 bufferJumpCounter = 0; // Reiniciar el contador de buffer jump al saltar
+
+                // NUEVO: Si el jugador ya no está presionando el botón en el frame de aterrizaje, cortamos el salto inmediatamente
+                if (!playerController.isJumpHeld)
+                {
+                    playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, playerController.rb.linearVelocity.y * jumpRelease);
+                    playerController.rb.gravityScale = playerController.fallGravity;
+                }
 
             }
         }

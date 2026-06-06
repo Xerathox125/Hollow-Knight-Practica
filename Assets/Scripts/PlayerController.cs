@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public UpdateAnimsPlayer updateAnimsPlayer;
     [HideInInspector] public PlayerMovement movement;
     [HideInInspector] public PlayerJump jump;
+    [HideInInspector] public bool isJumpHeld = false;
 
     void Awake()
     {
@@ -38,13 +39,13 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         movement.Move(); //MOVIMIENDO
-        jump.OnUpdate();
         //SALTO
         //AGACHARSE
     }
 
     private void Update()
     {
+        jump.OnUpdate();
         updateAnimsPlayer.UpdateAnimation();
     }
 
@@ -66,11 +67,13 @@ public class PlayerController : MonoBehaviour
 
     private void OnJump(InputAction.CallbackContext context)
     {
+        isJumpHeld = true;
         jump.JumpHold();
     }
 
     private void OnJumpRelease(InputAction.CallbackContext context)
     {
+        isJumpHeld = false;
         jump.JumpRelease(); //posible cambio
     }
 
