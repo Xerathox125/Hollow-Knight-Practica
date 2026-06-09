@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void Move() //Controla el movimiento del player
     {
-        //Vector donde se almacena el input del jugador que se recibe desde el PlayerController
+        //Vector donde se almacena el input del jugador, con esto se sabe que tecla está presionando el jugador
         Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>();
 
         //Aplicamos la velocidad en X al rigidbody del player controller

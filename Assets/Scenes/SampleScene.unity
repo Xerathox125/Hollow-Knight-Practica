@@ -3412,7 +3412,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 12.09, y: 4.16, z: -10}
+  m_LocalPosition: {x: 12.16, y: 4.03, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3511,6 +3511,7 @@ GameObject:
   - component: {fileID: 550543009}
   - component: {fileID: 550543007}
   - component: {fileID: 550543008}
+  - component: {fileID: 550543011}
   - component: {fileID: 550543010}
   m_Layer: 0
   m_Name: Player
@@ -3580,8 +3581,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.011562943, y: 0.001688838}
-  m_Size: {x: 0.8066337, y: 1.516629}
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.8, y: 1.5}
   m_Direction: 0
 --- !u!4 &550543006
 Transform:
@@ -3613,12 +3614,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   rb: {fileID: 0}
   animPlayer: {fileID: 0}
+  collPlayer: {fileID: 0}
   speed: 8.3
   normalGravity: 3
   fallGravity: 5
   updateAnimsPlayer: {fileID: 0}
   movement: {fileID: 0}
   jump: {fileID: 0}
+  crouch: {fileID: 0}
   isJumpHeld: 0
 --- !u!114 &550543008
 MonoBehaviour:
@@ -3667,6 +3670,18 @@ MonoBehaviour:
   coyoteCounter: 0
   bufferJumpTime: 0.1
   bufferJumpCounter: 0
+--- !u!114 &550543011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550543003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fc26cde5d2fe5b40a78930a852d2fd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCrouch
 --- !u!1 &564380786
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     // COMPONENTES
     [HideInInspector] public Rigidbody2D rb;
     [HideInInspector] public Animator animPlayer;
+    [HideInInspector] public CapsuleCollider2D collPlayer;
     public Controles controles;
 
     [Header("Variables Movimiento")]
@@ -20,17 +21,20 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public UpdateAnimsPlayer updateAnimsPlayer;
     [HideInInspector] public PlayerMovement movement;
     [HideInInspector] public PlayerJump jump;
+    [HideInInspector] public PlayerCrouch crouch;
     [HideInInspector] public bool isJumpHeld = false;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         animPlayer = GetComponentInChildren<Animator>();
+        collPlayer = GetComponent<CapsuleCollider2D>();
         controles = new Controles();
 
         updateAnimsPlayer = GetComponent<UpdateAnimsPlayer>();
         movement = GetComponent<PlayerMovement>();
-        jump = GetComponentInChildren<PlayerJump>();
+        jump = GetComponent<PlayerJump>();
+        crouch = GetComponent<PlayerCrouch>();
     }
 
     void FixedUpdate()
@@ -40,7 +44,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        jump.OnUpdate();
+        jump.OnUpdate(); //saltar
+        crouch.OnUpdate(); //agacharse
         updateAnimsPlayer.UpdateAnimation();
     }
 
