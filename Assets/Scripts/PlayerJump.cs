@@ -83,6 +83,13 @@ public class PlayerJump : MonoBehaviour
         {
             playerController.rb.gravityScale = playerController.fallGravity;
         }
+        
+        float maxFallSpeed = -20f;
+        if (currentVel.y < maxFallSpeed)
+        {
+            currentVel.y = maxFallSpeed;
+        }
+        
 
         // Aplicar la velocidad final una única vez
         playerController.rb.linearVelocity = currentVel;
