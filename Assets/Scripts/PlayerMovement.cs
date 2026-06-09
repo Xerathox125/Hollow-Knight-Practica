@@ -11,21 +11,22 @@ public class PlayerMovement : MonoBehaviour
         playerController = GetComponent<PlayerController>();
     }
 
-    public void Move() //Controla el movimiento del player
+    public void Move()
     {
-        //Vector donde se almacena el input del jugador, con esto se sabe que tecla está presionando el jugador
         Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>();
 
-        //Aplicamos la velocidad en X al rigidbody del player controller
-        playerController.rb.linearVelocity = new Vector2(move.x * playerController.speed, playerController.rb.linearVelocity.y);
+        // Elegimos la velocidad dinámica: si está agachado usamos crouchSpeed, si no, usamos speed
+        float currentSpeed = playerController.crouch.isCrouching ? playerController.crouchSpeed : playerController.speed;
 
-        // Dentro del bool isMoving guardamos si el player se mueve o no
+        // Aplicamos la velocidad calculada al rigidbody
+        playerController.rb.linearVelocity = new Vector2(move.x * currentSpeed, playerController.rb.linearVelocity.y);
+
         isMoving = move.x != 0;
 
-        if (move.x > 0 && !isFacingRight)        
-            Flip();        
+        if (move.x > 0 && !isFacingRight)
+            Flip();
         else if (move.x < 0 && isFacingRight)
-            Flip();        
+            Flip();
     }
 
 

@@ -12,6 +12,14 @@ public class PlayerCrouch : MonoBehaviour
     public float rayCheckDistance; //Detemina el tamaño del rayo
     public LayerMask headCollision;
 
+    //Getters 
+    public bool canStandUp
+    {
+        get { return CanStandUp(); }
+    }
+
+    public bool isCrouching { get; private set; }
+
 
     private void Start()
     {
@@ -20,22 +28,28 @@ public class PlayerCrouch : MonoBehaviour
         originalCollSize = playerController.collPlayer.size;
     }
 
+    // Variable para saber si estamos agachados (se puede leer desde otros scripts, pero solo modificar aquí)
+
     public void OnUpdate()
     {
-        Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>(); //con esto se sabe que tecla está presionando el jugador
+        Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>();
 
-        //Cmabiamos el tamaño del colisionador del personaje según si está agachado o no
-        if (Mathf.RoundToInt(move.y) == -1) //se presionó la tecla hacia abajo ("S" o "flecha hacia abajo")
+        // Si presionamos hacia abajo O NO podemos pararnos por el techo
+        if (Mathf.RoundToInt(move.y) == -1 || !CanStandUp())
         {
-            //Disminuir tamaño y el offset del collider
-            playerController.collPlayer.offset = new Vector2(playerController.collPlayer.offset.x, -0.35f); //ajustar el offset del collider para que se mantenga en el suelo
-            playerController.collPlayer.size = new Vector2(playerController.collPlayer.size.x, -0.80f); //ajustar el offset del collider para que se mantenga en el suelo
+            isCrouching = true; // Avisamos que estamos agachados
+
+            // Disminuir tamaño y el offset del collider
+            playerController.collPlayer.offset = new Vector2(playerController.collPlayer.offset.x, -0.35f);
+            playerController.collPlayer.size = new Vector2(playerController.collPlayer.size.x, -0.80f);
         }
-        else if (CanStandUp())
+        else
         {
-            //Volver el tamaño y el offset del collider
-            playerController.collPlayer.offset = originalCollOffset; //ajustar el offset del collider para que se mantenga en el suelo
-            playerController.collPlayer.size = originalCollSize; //ajustar el offset del collider para que se mantenga en el suelo
+            isCrouching = false; // Avisamos que estamos de pie
+
+            // Volver al tamaño y el offset original del collider
+            playerController.collPlayer.offset = originalCollOffset;
+            playerController.collPlayer.size = originalCollSize;
         }
     }
 

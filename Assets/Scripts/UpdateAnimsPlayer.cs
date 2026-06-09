@@ -6,7 +6,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
     private PlayerController playerController;
 
     // OPTIMIZACIÓN: Enum para rastrear el estado actual y no repetir instancias
-    private enum AnimState { None, Idle, Run, JumpStart, JumpEnd }
+    private enum AnimState { None, Idle, Run, JumpStart, JumpEnd, CrouchIdle, CrouchRun }
     private AnimState currentAnim = AnimState.None;
 
     private void Awake()
@@ -17,6 +17,8 @@ public class UpdateAnimsPlayer : MonoBehaviour
 
     public void UpdateAnimation()
     {
+        Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>();
+
         // 1. Actualizar animaciones de salto
         if (!playerController.jump.IsGrounded)
         {
@@ -34,6 +36,30 @@ public class UpdateAnimsPlayer : MonoBehaviour
                 {
                     animationManager.SetState(new JumpEndPlayerStateAnim(playerController.animPlayer));
                     currentAnim = AnimState.JumpEnd;
+                }
+            }
+            return;
+        }
+
+
+        //Actualizar animaciones de crouch
+        if (Mathf.RoundToInt(move.y) == -1 || !playerController.crouch.canStandUp)
+        {
+            if (playerController.movement.IsMoving) // Si con la tecla presionada hacia abajo nos movemos
+            {
+
+                if (currentAnim != AnimState.CrouchRun)
+                { 
+                    animationManager.SetState(new RunCrouchPlayerStateAnim(playerController.animPlayer));
+                    currentAnim = AnimState.CrouchRun;
+                }
+            }
+            else  // Si con la tecla presionada hacia abajo no nos movemos
+            {
+                if (currentAnim != AnimState.CrouchIdle)
+                {
+                        animationManager.SetState(new IdleCrouchPlayerStateAnim(playerController.animPlayer));
+                        currentAnim = AnimState.CrouchIdle;
                 }
             }
             return;

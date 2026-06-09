@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Variables Movimiento")]
     public float speed;
+    public float crouchSpeed;
 
     [Header("Variables de Salto")]
     public float normalGravity = 2f;
