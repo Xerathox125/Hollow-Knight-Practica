@@ -55,13 +55,15 @@ public class PlayerController : MonoBehaviour
         controles.Enable();
         controles.Player.Jump.performed += OnJump;
         controles.Player.Jump.canceled += OnJumpRelease;
-    }
+        controles.Player.Dash.performed += OnDash;
+    }  
 
     private void OnDisable()
     {
-        controles.Player.Jump.performed -= OnJump;
         controles.Disable();
+        controles.Player.Jump.performed -= OnJump;
         controles.Player.Jump.canceled -= OnJumpRelease;
+        controles.Player.Dash.performed -= OnDash;
     }
 
     private void OnJump(InputAction.CallbackContext context)
@@ -74,5 +76,11 @@ public class PlayerController : MonoBehaviour
     {
         isJumpHeld = false;
         jump.JumpRelease();
+    }
+
+    private void OnDash(InputAction.CallbackContext context)
+    {
+        //llamar método hold dash
+        
     }
 }

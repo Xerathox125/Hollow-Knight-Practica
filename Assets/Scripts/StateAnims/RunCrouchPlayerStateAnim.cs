@@ -7,5 +7,3 @@ public class RunCrouchPlayerStateAnim : StatesAnimsAbstract
         ActiveAnimation("stateAnim", 6, ref animPlayer);
     }
 }
-
-
