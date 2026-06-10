@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -23,19 +24,22 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public PlayerMovement movement;
     [HideInInspector] public PlayerJump jump;
     [HideInInspector] public PlayerCrouch crouch;
+    [HideInInspector] public PlayerDash dash;
     [HideInInspector] public bool isJumpHeld = false;
 
     void Awake()
-    {
+    {   //Componenttes
         rb = GetComponent<Rigidbody2D>();
         animPlayer = GetComponentInChildren<Animator>();
         collPlayer = GetComponent<CapsuleCollider2D>();
         controles = new Controles();
 
+        //Conectar mecánicas
         updateAnimsPlayer = GetComponent<UpdateAnimsPlayer>();
         movement = GetComponent<PlayerMovement>();
         jump = GetComponent<PlayerJump>();
         crouch = GetComponent<PlayerCrouch>();
+        dash = GetComponent<PlayerDash>();
     }
 
     void FixedUpdate()
