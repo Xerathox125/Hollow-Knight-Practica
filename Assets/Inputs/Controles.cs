@@ -190,7 +190,7 @@ public partial class @Controles: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""3338c5cb-e496-47ad-8e6c-11f9e00b33c8"",
-                    ""path"": ""<Keyboard>/x"",
+                    ""path"": ""<Keyboard>/shift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

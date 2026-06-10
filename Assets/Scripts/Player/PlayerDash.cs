@@ -10,16 +10,30 @@ public class PlayerDash : MonoBehaviour
     public bool isDash = false;
 
     //Timers
-    private float timerDashDuration = 0f; //cooldown o timer que verifica el dashDuration
-    private float timerCoolDownDash = 0f; //Cooldown del Dash
+    public float timerDashDuration = 0f; //cooldown o timer que verifica el dashDuration
+    public float timerCoolDownDash = 0f; //Cooldown del Dash
 
     private Vector2 dashDirection;
     private PlayerController playerController;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Awake()
+    private void Awake()
     {
         playerController = GetComponent<PlayerController>();
+    }
+
+    public void OnUpdate()
+    {
+        if (timerCoolDownDash > 0f)
+        {
+            timerCoolDownDash -= Time.deltaTime;
+        }
+
+        if (isDash)
+        {
+            DashUpdate();
+        }
+
     }
 
     //Verificamos los timers y dirección del dash
@@ -31,8 +45,9 @@ public class PlayerDash : MonoBehaviour
 
         playerController.rb.gravityScale = 0f;
 
-        //Verificar la dirección del dash
+        // Verificar la dirección del dash
         Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>();
+
         if (move.x > 0.5f && move.y > 0.5f) //input arriba derecha
         {
             dashDirection = new Vector2(1, 1).normalized;
@@ -41,11 +56,11 @@ public class PlayerDash : MonoBehaviour
         {
             dashDirection = new Vector2(-1, 1).normalized;
         }
-        else if (move.x > -0.5f && move.y < -0.5f) //input abajo derecha
+        else if (move.x > 0.5f && move.y < -0.5f) // CORREGIDO: input abajo derecha (tenías > -0.5f)
         {
             dashDirection = new Vector2(1, -1).normalized;
         }
-        else if (move.x < -0.5f && move.y < -0.5f) //input abajo derecha
+        else if (move.x < -0.5f && move.y < -0.5f) //input abajo izquierda
         {
             dashDirection = new Vector2(-1, -1).normalized;
         }
@@ -61,12 +76,45 @@ public class PlayerDash : MonoBehaviour
         {
             dashDirection = Vector2.right;
         }
-        else if (move.y < -0.5f) //input izquierda
+        else if (move.x < -0.5f) // CORREGIDO: antes evaluabas move.y < -0.5f para ir a la izquierda
         {
             dashDirection = Vector2.left;
         }
+        else
+        {
+            // ¡NUEVO! Si hace el dash sin presionar direcciones, va hacia donde mira el sprite
+            float lookDirection = Mathf.Sign(transform.localScale.x);
+            dashDirection = new Vector2(lookDirection, 0f);
+        }
+    }
 
-        //Verificar si hace el dash sin presionar teclas de movimiento
+
+    void DashUpdate()
+    {
+        //Aplicamos la velocidad del dash al RB del player
+        playerController.rb.linearVelocity = dashDirection * dashForce;
+
+        //Actualizamos timers
+        timerDashDuration -= Time.deltaTime;
+
+        if (timerDashDuration <= 0)
+        {
+            DashEnd(); //Terminar dash
+        }
+
+    }
+
+    //Este método actualiza isDash y reinicia la grabedad después del Dash
+    void DashEnd()
+    {
+        isDash = false;
+        playerController.rb.gravityScale = playerController.normalGravity;
+    }
+
+    public void DashHold() //El método se llama cuando el juego detecta que se presiona la acción de Dash
+    {
+        if (!isDash && timerCoolDownDash <= 0)
+            DashStart();
     }
 
 

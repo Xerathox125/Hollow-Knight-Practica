@@ -51,7 +51,8 @@ public class PlayerController : MonoBehaviour
     {
         jump.OnUpdate(); //saltar
         crouch.OnUpdate(); //agacharse
-        updateAnimsPlayer.UpdateAnimation();
+        dash.OnUpdate(); //dash
+        updateAnimsPlayer.UpdateAnimation();        
     }
 
     private void OnEnable()
@@ -84,7 +85,6 @@ public class PlayerController : MonoBehaviour
 
     private void OnDash(InputAction.CallbackContext context)
     {
-        //llamar método hold dash
-        
+        dash.DashHold();        
     }
 }

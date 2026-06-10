@@ -13,6 +13,9 @@ public class PlayerMovement : MonoBehaviour
 
     public void Move()
     {
+        if (playerController.dash != null && playerController.dash.isDash)
+            return;
+
         Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>();
 
         // Elegimos la velocidad dinámica: si está agachado usamos crouchSpeed, si no, usamos speed

@@ -5,8 +5,8 @@ public class UpdateAnimsPlayer : MonoBehaviour
     private AnimationManager animationManager;
     private PlayerController playerController;
 
-    // OPTIMIZACIÓN: Enum para rastrear el estado actual y no repetir instancias
-    private enum AnimState { None, Idle, Run, JumpStart, JumpEnd, CrouchIdle, CrouchRun }
+    // OPTIMIZACIÓN: Añadimos Dash al Enum para rastrear el estado
+    private enum AnimState { None, Idle, Run, JumpStart, JumpEnd, CrouchIdle, CrouchRun, Dash }
     private AnimState currentAnim = AnimState.None;
 
     private void Awake()
@@ -17,14 +17,26 @@ public class UpdateAnimsPlayer : MonoBehaviour
 
     public void UpdateAnimation()
     {
+        // 1. PRIORIDAD ABSOLUTA: Si está haciendo Dash, congelamos cualquier otra animación
+        if (playerController.dash != null && playerController.dash.isDash)
+        {
+            if (currentAnim != AnimState.Dash)
+            {
+                // NOTA: Asegúrate de tener creada tu clase DashPlayerStateAnim en tu sistema de estados
+                animationManager.SetState(new DashPlayerStateAnim(playerController.animPlayer));
+                currentAnim = AnimState.Dash;
+            }
+            return; // Salimos inmediatamente para no evaluar el resto del código
+        }
+
         Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>();
 
-        // 1. Actualizar animaciones de salto
+        // 2. Actualizar animaciones de salto
         if (!playerController.jump.IsGrounded)
         {
             if (playerController.rb.linearVelocity.y > 0.1f)
             {
-                if (currentAnim != AnimState.JumpStart) // Solo instanciamos si cambiamos de estado
+                if (currentAnim != AnimState.JumpStart)
                 {
                     animationManager.SetState(new JumpStartPlayerStateAnim(playerController.animPlayer));
                     currentAnim = AnimState.JumpStart;
@@ -41,31 +53,29 @@ public class UpdateAnimsPlayer : MonoBehaviour
             return;
         }
 
-
-        //Actualizar animaciones de crouch
+        // 3. Actualizar animaciones de crouch
         if (Mathf.RoundToInt(move.y) == -1 || !playerController.crouch.canStandUp)
         {
-            if (playerController.movement.IsMoving) // Si con la tecla presionada hacia abajo nos movemos
+            if (playerController.movement.IsMoving)
             {
-
                 if (currentAnim != AnimState.CrouchRun)
-                { 
+                {
                     animationManager.SetState(new RunCrouchPlayerStateAnim(playerController.animPlayer));
                     currentAnim = AnimState.CrouchRun;
                 }
             }
-            else  // Si con la tecla presionada hacia abajo no nos movemos
+            else
             {
                 if (currentAnim != AnimState.CrouchIdle)
                 {
-                        animationManager.SetState(new IdleCrouchPlayerStateAnim(playerController.animPlayer));
-                        currentAnim = AnimState.CrouchIdle;
+                    animationManager.SetState(new IdleCrouchPlayerStateAnim(playerController.animPlayer));
+                    currentAnim = AnimState.CrouchIdle;
                 }
             }
             return;
         }
 
-        // 2. Actualizar animaciones de movimiento            
+        // 4. Actualizar animaciones de movimiento            
         if (playerController.movement.IsMoving)
         {
             if (currentAnim != AnimState.Run)
