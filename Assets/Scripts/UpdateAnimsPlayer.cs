@@ -6,7 +6,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
     private PlayerController playerController;
 
     // OPTIMIZACIÓN: Añadimos Dash al Enum para rastrear el estado
-    private enum AnimState { None, Idle, Run, JumpStart, JumpEnd, CrouchIdle, CrouchRun, Dash }
+    private enum AnimState { None, Idle, Run, JumpStart, JumpEnd, CrouchIdle, CrouchRun, Dash, StairsIdle, StairsMove }
     private AnimState currentAnim = AnimState.None;
 
     private void Awake()
@@ -17,12 +17,11 @@ public class UpdateAnimsPlayer : MonoBehaviour
 
     public void UpdateAnimation()
     {
-        // 1. PRIORIDAD ABSOLUTA: Si está haciendo Dash, congelamos cualquier otra animación
+        // 1. Si está haciendo Dash, congelamos cualquier otra animación
         if (playerController.dash != null && playerController.dash.isDash)
         {
             if (currentAnim != AnimState.Dash)
             {
-                // NOTA: Asegúrate de tener creada tu clase DashPlayerStateAnim en tu sistema de estados
                 animationManager.SetState(new DashPlayerStateAnim(playerController.animPlayer));
                 currentAnim = AnimState.Dash;
             }

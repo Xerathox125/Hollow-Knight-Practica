@@ -56,7 +56,7 @@ public class PlayerDash : MonoBehaviour
         {
             dashDirection = new Vector2(-1, 1).normalized;
         }
-        else if (move.x > 0.5f && move.y < -0.5f) // CORREGIDO: input abajo derecha (tenías > -0.5f)
+        else if (move.x > 0.5f && move.y < -0.5f) // input abajo derecha
         {
             dashDirection = new Vector2(1, -1).normalized;
         }
@@ -76,13 +76,13 @@ public class PlayerDash : MonoBehaviour
         {
             dashDirection = Vector2.right;
         }
-        else if (move.x < -0.5f) // CORREGIDO: antes evaluabas move.y < -0.5f para ir a la izquierda
+        else if (move.x < -0.5f) // input izquierda
         {
             dashDirection = Vector2.left;
         }
         else
         {
-            // ¡NUEVO! Si hace el dash sin presionar direcciones, va hacia donde mira el sprite
+            //Si hace el dash sin presionar direcciones, va hacia donde mira el sprite
             float lookDirection = Mathf.Sign(transform.localScale.x);
             dashDirection = new Vector2(lookDirection, 0f);
         }
