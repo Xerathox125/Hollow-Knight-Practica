@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour
         controles.Player.Dash.performed -= OnDash;
     }
 
+    //Métodos Inputs
     private void OnJump(InputAction.CallbackContext context)
     {
         isJumpHeld = true;
@@ -87,4 +88,24 @@ public class PlayerController : MonoBehaviour
     {
         dash.DashHold();        
     }
+
+    
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Stairs"))
+        {
+            //rango escalera = true
+            Debug.Log("Entramos en rango de las escaleras");
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Stairs"))
+        {
+            //rango escalera = false
+            Debug.Log("Salimos del rango de las escaleras");
+        }
+    }
+
 }
