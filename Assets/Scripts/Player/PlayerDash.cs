@@ -18,7 +18,7 @@ public class PlayerDash : MonoBehaviour
     private Vector2 dashDirection;
     private PlayerController playerController;
 
-    private void Awake()
+    private void Start()
     {
         playerController = GetComponent<PlayerController>();
     }

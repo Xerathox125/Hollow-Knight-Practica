@@ -3503,6 +3503,7 @@ GameObject:
   - component: {fileID: 550543010}
   - component: {fileID: 550543011}
   - component: {fileID: 550543012}
+  - component: {fileID: 550543013}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -3614,6 +3615,7 @@ MonoBehaviour:
   jump: {fileID: 0}
   crouch: {fileID: 0}
   dash: {fileID: 0}
+  stairs: {fileID: 0}
   isJumpHeld: 0
 --- !u!114 &550543008
 MonoBehaviour:
@@ -3695,8 +3697,24 @@ MonoBehaviour:
   dashDuration: 0.3
   coolDownDash: 0.4
   isDash: 0
+  hasAirDashed: 0
   timerDashDuration: 0
   timerCoolDownDash: 0
+--- !u!114 &550543013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550543003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 764083f9a924b3d428aeb1f78404d0ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStairs
+  stairsSpeed: 5
+  rangeStairs: 0
+  isStairs: 0
 --- !u!1 &564380786
 GameObject:
   m_ObjectHideFlags: 0

@@ -30,6 +30,33 @@ public class UpdateAnimsPlayer : MonoBehaviour
 
         Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>();
 
+
+        // NUEVO BLOQUE: 2. Animaciones de Escaleras
+        if (playerController.stairs.isStairs)
+        {
+            // Verificamos si el jugador está presionando los controles para moverse
+            if (Mathf.Abs(move.x) > 0.1f || Mathf.Abs(move.y) > 0.1f)
+            {
+                if (currentAnim != AnimState.StairsMove)
+                {
+                    // Asegúrate de tener esta clase creada
+                    animationManager.SetState(new MoveStairsPlayerStateAnim(playerController.animPlayer));
+                    currentAnim = AnimState.StairsMove;
+                }
+            }
+            else // Si no se mueve, está quieto en la reja
+            {
+                if (currentAnim != AnimState.StairsIdle)
+                {
+                    // Asegúrate de tener esta clase creada
+                    animationManager.SetState(new IdleStairsPlayerStateAnim(playerController.animPlayer));
+                    currentAnim = AnimState.StairsIdle;
+                }
+            }
+            return; // ¡Crucial! Salimos aquí para que no reproduzca animaciones de salto o correr
+        }
+
+
         // 2. Actualizar animaciones de salto
         if (!playerController.jump.IsGrounded)
         {

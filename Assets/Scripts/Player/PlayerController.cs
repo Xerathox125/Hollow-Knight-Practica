@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.LookDev;
 
 public class PlayerController : MonoBehaviour
 {
@@ -25,10 +26,12 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public PlayerJump jump;
     [HideInInspector] public PlayerCrouch crouch;
     [HideInInspector] public PlayerDash dash;
+    [HideInInspector] public PlayerStairs stairs;
+
     [HideInInspector] public bool isJumpHeld = false;
 
     void Awake()
-    {   //Componenttes
+    {   //Componentes
         rb = GetComponent<Rigidbody2D>();
         animPlayer = GetComponentInChildren<Animator>();
         collPlayer = GetComponent<CapsuleCollider2D>();
@@ -40,18 +43,23 @@ public class PlayerController : MonoBehaviour
         jump = GetComponent<PlayerJump>();
         crouch = GetComponent<PlayerCrouch>();
         dash = GetComponent<PlayerDash>();
+        stairs = GetComponent<PlayerStairs>();
     }
 
     void FixedUpdate()
     {
-        movement.Move();
+        if(!stairs.isStairs)
+            movement.Move();
+        stairs.OnFixedUpdate();
     }
 
     private void Update()
     {
+
         jump.OnUpdate(); //saltar
         crouch.OnUpdate(); //agacharse
         dash.OnUpdate(); //dash
+        stairs.OnUpdate();
         updateAnimsPlayer.UpdateAnimation();        
     }
 
@@ -86,6 +94,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnDash(InputAction.CallbackContext context)
     {
+        if(stairs.isStairs) // Evitamos que el jugador pueda hacer dash mientras está en las escaleras
+            return; 
+
         dash.DashHold();        
     }
 
@@ -94,8 +105,7 @@ public class PlayerController : MonoBehaviour
     {
         if(collision.CompareTag("Stairs"))
         {
-            //rango escalera = true
-            Debug.Log("Entramos en rango de las escaleras");
+            stairs.rangeStairs = true;
         }
     }
 
@@ -103,8 +113,8 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.CompareTag("Stairs"))
         {
-            //rango escalera = false
-            Debug.Log("Salimos del rango de las escaleras");
+            stairs.rangeStairs = false;
+            stairs.ExitStairs();
         }
     }
 
