@@ -36,14 +36,12 @@ public class PlayerJump : MonoBehaviour
 
     public void CheckGround()
     {
-        // OPTIMIZACIÓN: Asignación directa sin if/else
         RaycastHit2D hit = Physics2D.CircleCast(transform.position, groundRadius, Vector2.down, groundCheckDistance, groundMask);
         isGrounded = hit.collider != null;
     }
 
     public void JumpUpdates()
     {
-        // OPTIMIZACIÓN: Cachear la velocidad para evitar múltiples llamadas al motor de físicas
         Vector2 currentVel = playerController.rb.linearVelocity;
 
         if (isGrounded)
@@ -79,24 +77,32 @@ public class PlayerJump : MonoBehaviour
         {
             playerController.rb.gravityScale = playerController.normalGravity;
         }
-        else if (currentVel.y < -0.1f) // Usa la variable cacheada
+        else if (currentVel.y < -0.1f)
         {
             playerController.rb.gravityScale = playerController.fallGravity;
         }
-        
+
         float maxFallSpeed = -20f;
         if (currentVel.y < maxFallSpeed)
         {
             currentVel.y = maxFallSpeed;
         }
-        
 
-        // Aplicar la velocidad final una única vez
         playerController.rb.linearVelocity = currentVel;
     }
 
     public void JumpHold()
     {
+        if (playerController.stairs.IsStairs) //Si estamos en una escalera, nos impulsamos con un salto y salimos de la escalera
+        {
+            playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, jumpForce);
+
+            // CORRECCIÓN: Le pasamos un cooldown de 0.2 segundos al salir de la escalera.
+            // Esto evita que la tecla "W" te vuelva a atrapar en el mismo frame del salto.
+            playerController.stairs.ExitStairs(0.2f);
+            return;
+        }
+
         if ((isGrounded || coyoteCounter > 0) && !hasJumped)
         {
             playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, jumpForce);

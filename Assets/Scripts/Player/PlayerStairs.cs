@@ -6,8 +6,10 @@ public class PlayerStairs : MonoBehaviour
 
     [Header("Escaleras")]
     public float stairsSpeed; //Velocidad de movimiento mientras escalamos
-    public bool rangeStairs; //Deecta si estamos en el rango de la escalera para escalarla
+    public bool rangeStairs; //Detecta si estamos en el rango de la escalera para escalarla
     private bool isStairs;  //Determina si estamos en una escalera o no
+
+    private float cooldownTimer = 0f; // NUEVO: Temporizador para evitar reenganches inmediatos al saltar
 
     //Getters
     public bool IsStairs { get => isStairs; }
@@ -19,6 +21,12 @@ public class PlayerStairs : MonoBehaviour
 
     public void OnUpdate()
     {
+        // Reducimos el cooldown frame a frame si está activo
+        if (cooldownTimer > 0f)
+        {
+            cooldownTimer -= Time.deltaTime;
+        }
+
         DetectStairs();
     }
 
@@ -27,12 +35,11 @@ public class PlayerStairs : MonoBehaviour
         MoveStairs();
     }
 
-
-
     //Detecta si podemos iniciar la mecánica de escalado
     void DetectStairs()
     {
-        if (rangeStairs && !isStairs)
+        // MODIFICACIÓN: Agregamos la condición de que el cooldown haya terminado (cooldownTimer <= 0f)
+        if (rangeStairs && !isStairs && cooldownTimer <= 0f)
         {
             Vector2 upArrow = playerController.controles.Player.Move.ReadValue<Vector2>();
             if (upArrow.y > 0.5f) //Verificar si se presiona la tecla hacia arriba
@@ -59,14 +66,14 @@ public class PlayerStairs : MonoBehaviour
             playerController.rb.gravityScale = 0f;
             Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>(); //Vector donde se almacena el input del jugador que se recibe desde PlayerController
             playerController.rb.linearVelocity = new Vector2(move.x * stairsSpeed, move.y * stairsSpeed); //Aplicamos la velocidad en X y Y al rigidbody del PlayerController
-
         }
     }
 
-    //Este método reinicia la gravedad del player y actualiza el bool isStairs a false
-    public void ExitStairs()
+    // MODIFICACIÓN: Añadimos un parámetro opcional 'cooldown' que por defecto es 0
+    public void ExitStairs(float cooldown = 0f)
     {
         isStairs = false;
+        cooldownTimer = cooldown; // Asignamos el tiempo de espera para no volver a engancharnos inmediatamente
         playerController.rb.gravityScale = playerController.normalGravity;
     }
 }

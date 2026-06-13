@@ -5,7 +5,6 @@ public class UpdateAnimsPlayer : MonoBehaviour
     private AnimationManager animationManager;
     private PlayerController playerController;
 
-    // OPTIMIZACIÓN: Añadimos Dash al Enum para rastrear el estado
     private enum AnimState { None, Idle, Run, JumpStart, JumpEnd, CrouchIdle, CrouchRun, Dash, StairsIdle, StairsMove }
     private AnimState currentAnim = AnimState.None;
 
@@ -29,7 +28,6 @@ public class UpdateAnimsPlayer : MonoBehaviour
         }
 
         Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>();
-
 
         // NUEVO BLOQUE: 2. Animaciones de Escaleras
         if (playerController.stairs.IsStairs)
