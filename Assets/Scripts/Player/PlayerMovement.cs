@@ -6,49 +6,32 @@ public class PlayerMovement : MonoBehaviour
     private bool isFacingRight = true;
     private bool isMoving;
 
-    private void Awake()
+    public bool IsMoving => isMoving;
+
+    private void Awake() => playerController = GetComponent<PlayerController>();
+
+    // Cambiado de Move() a OnUpdate() para actualizar flags de movimiento en Update
+    public void OnUpdate()
     {
-        playerController = GetComponent<PlayerController>();
+        isMoving = playerController.moveInput.x != 0;
     }
 
     public void Move()
     {
-        if (playerController.dash != null && playerController.dash.isDash)
-            return;
+        if (playerController.dash?.isDash == true) return;
 
-        Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>();
+        Vector2 move = playerController.moveInput; // Input optimizado
 
-        // Elegimos la velocidad dinámica: si está agachado usamos crouchSpeed, si no, usamos speed
         float currentSpeed = playerController.crouch.isCrouching ? playerController.crouchSpeed : playerController.speed;
-
-        // Aplicamos la velocidad calculada al rigidbody
         playerController.rb.linearVelocity = new Vector2(move.x * currentSpeed, playerController.rb.linearVelocity.y);
 
-        isMoving = move.x != 0;
-
-        if (move.x > 0 && !isFacingRight)
-            Flip();
-        else if (move.x < 0 && isFacingRight)
-            Flip();
+        if (move.x > 0 && !isFacingRight) Flip();
+        else if (move.x < 0 && isFacingRight) Flip();
     }
 
-
-    private void Flip() //Controla el cambio de vista del player según la dirección del movimiento
+    private void Flip()
     {
         isFacingRight = !isFacingRight;
-
-        if (isFacingRight)
-        {
-            transform.localScale = new Vector3(1, 1);
-        }
-        else
-        {
-            transform.localScale = new Vector3(-1, 1);
-        }
-    }
-
-    public bool IsMoving //Getter de la variable isMoving para saber si nos estamos moviendo
-    {
-        get{ return isMoving; }
+        transform.localScale = new Vector3(isFacingRight ? 1f : -1f, 1f, 1f); // Simplificación visual de flip sin ifs anidados
     }
 }

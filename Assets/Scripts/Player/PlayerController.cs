@@ -1,8 +1,5 @@
-using JetBrains.Annotations;
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering.LookDev;
 
 public class PlayerController : MonoBehaviour
 {
@@ -30,14 +27,16 @@ public class PlayerController : MonoBehaviour
 
     [HideInInspector] public bool isJumpHeld = false;
 
+    // OPTIMIZACIÓN: Cacheamos el input aquí para que ningún otro script tenga que volver a leer el hardware
+    [HideInInspector] public Vector2 moveInput;
+
     void Awake()
-    {   //Componentes
+    {
         rb = GetComponent<Rigidbody2D>();
         animPlayer = GetComponentInChildren<Animator>();
         collPlayer = GetComponent<CapsuleCollider2D>();
         controles = new Controles();
 
-        //Conectar mecánicas
         updateAnimsPlayer = GetComponent<UpdateAnimsPlayer>();
         movement = GetComponent<PlayerMovement>();
         jump = GetComponent<PlayerJump>();
@@ -46,21 +45,24 @@ public class PlayerController : MonoBehaviour
         stairs = GetComponent<PlayerStairs>();
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        if(!stairs.IsStairs)
-            movement.Move();
-        stairs.OnFixedUpdate();
+        // Leemos el input una única vez por frame
+        moveInput = controles.Player.Move.ReadValue<Vector2>();
+
+        movement.OnUpdate();
+        jump.OnUpdate();
+        crouch.OnUpdate();
+        dash.OnUpdate();
+        stairs.OnUpdate();
+        updateAnimsPlayer.UpdateAnimation();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-
-        jump.OnUpdate(); //saltar
-        crouch.OnUpdate(); //agacharse
-        dash.OnUpdate(); //dash
-        stairs.OnUpdate();
-        updateAnimsPlayer.UpdateAnimation();        
+        movement.Move();
+        dash.OnFixedUpdate();
+        stairs.OnFixedUpdate();
     }
 
     private void OnEnable()
@@ -69,7 +71,7 @@ public class PlayerController : MonoBehaviour
         controles.Player.Jump.performed += OnJump;
         controles.Player.Jump.canceled += OnJumpRelease;
         controles.Player.Dash.performed += OnDash;
-    }  
+    }
 
     private void OnDisable()
     {
@@ -79,7 +81,6 @@ public class PlayerController : MonoBehaviour
         controles.Player.Dash.performed -= OnDash;
     }
 
-    //Métodos Inputs
     private void OnJump(InputAction.CallbackContext context)
     {
         isJumpHeld = true;
@@ -94,19 +95,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnDash(InputAction.CallbackContext context)
     {
-        if(stairs.IsStairs) // Evitamos que el jugador pueda hacer dash mientras está en las escaleras
-            return; 
-
-        dash.DashHold();        
+        if (!stairs.IsStairs) dash.DashHold();
     }
 
-    
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if(collision.CompareTag("Stairs"))
-        {
-            stairs.rangeStairs = true;
-        }
+        if (collision.CompareTag("Stairs")) stairs.rangeStairs = true;
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -114,8 +108,7 @@ public class PlayerController : MonoBehaviour
         if (collision.CompareTag("Stairs"))
         {
             stairs.rangeStairs = false;
-            stairs.ExitStairs();
+            if (stairs.IsStairs) stairs.ExitStairs();
         }
     }
-
 }

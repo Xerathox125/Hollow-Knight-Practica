@@ -23,10 +23,7 @@ public class PlayerJump : MonoBehaviour
 
     public bool IsGrounded => isGrounded;
 
-    public void Awake()
-    {
-        playerController = GetComponent<PlayerController>();
-    }
+    public void Awake() => playerController = GetComponent<PlayerController>();
 
     public void OnUpdate()
     {
@@ -48,10 +45,12 @@ public class PlayerJump : MonoBehaviour
         {
             coyoteCounter = coyoteTime;
             hasJumped = false;
+            playerController.rb.gravityScale = playerController.normalGravity;
         }
         else
         {
             coyoteCounter -= Time.deltaTime;
+            if (currentVel.y < -0.1f) playerController.rb.gravityScale = playerController.fallGravity;
         }
 
         if (bufferJumpCounter > 0)
@@ -61,7 +60,6 @@ public class PlayerJump : MonoBehaviour
             if (isGrounded)
             {
                 currentVel.y = jumpForce;
-                playerController.rb.gravityScale = playerController.normalGravity;
                 coyoteCounter = 0;
                 bufferJumpCounter = 0;
 
@@ -73,32 +71,17 @@ public class PlayerJump : MonoBehaviour
             }
         }
 
-        if (isGrounded)
-        {
-            playerController.rb.gravityScale = playerController.normalGravity;
-        }
-        else if (currentVel.y < -0.1f)
-        {
-            playerController.rb.gravityScale = playerController.fallGravity;
-        }
-
         float maxFallSpeed = -20f;
-        if (currentVel.y < maxFallSpeed)
-        {
-            currentVel.y = maxFallSpeed;
-        }
+        if (currentVel.y < maxFallSpeed) currentVel.y = maxFallSpeed;
 
         playerController.rb.linearVelocity = currentVel;
     }
 
     public void JumpHold()
     {
-        if (playerController.stairs.IsStairs) //Si estamos en una escalera, nos impulsamos con un salto y salimos de la escalera
+        if (playerController.stairs.IsStairs)
         {
             playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, jumpForce);
-
-            // CORRECCIÓN: Le pasamos un cooldown de 0.2 segundos al salir de la escalera.
-            // Esto evita que la tecla "W" te vuelva a atrapar en el mismo frame del salto.
             playerController.stairs.ExitStairs(0.2f);
             return;
         }
@@ -129,7 +112,6 @@ public class PlayerJump : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = isGrounded ? Color.green : Color.red;
-        Vector3 checkPosition = transform.position + Vector3.down * groundCheckDistance;
-        Gizmos.DrawWireSphere(checkPosition, groundRadius);
+        Gizmos.DrawWireSphere(transform.position + Vector3.down * groundCheckDistance, groundRadius);
     }
 }

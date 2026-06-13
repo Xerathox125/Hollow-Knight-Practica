@@ -16,7 +16,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
 
     public void UpdateAnimation()
     {
-        // 1. Si está haciendo Dash, congelamos cualquier otra animación
+        // 1. Dash
         if (playerController.dash != null && playerController.dash.isDash)
         {
             if (currentAnim != AnimState.Dash)
@@ -24,41 +24,35 @@ public class UpdateAnimsPlayer : MonoBehaviour
                 animationManager.SetState(new DashPlayerStateAnim(playerController.animPlayer));
                 currentAnim = AnimState.Dash;
             }
-            return; // Salimos inmediatamente para no evaluar el resto del código
+            return;
         }
 
         Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>();
 
-        // NUEVO BLOQUE: 2. Animaciones de Escaleras
+        // 2. Escaleras
         if (playerController.stairs.IsStairs)
         {
-            // Verificamos si el jugador está presionando los controles para moverse
             if (Mathf.Abs(move.x) > 0.1f || Mathf.Abs(move.y) > 0.1f)
             {
                 if (currentAnim != AnimState.StairsMove)
                 {
-                    // Asegúrate de tener esta clase creada
                     animationManager.SetState(new MoveStairsPlayerStateAnim(playerController.animPlayer));
                     currentAnim = AnimState.StairsMove;
                 }
             }
-            else // Si no se mueve, está quieto en la reja
+            else if (currentAnim != AnimState.StairsIdle)
             {
-                if (currentAnim != AnimState.StairsIdle)
-                {
-                    // Asegúrate de tener esta clase creada
-                    animationManager.SetState(new IdleStairsPlayerStateAnim(playerController.animPlayer));
-                    currentAnim = AnimState.StairsIdle;
-                }
+                animationManager.SetState(new IdleStairsPlayerStateAnim(playerController.animPlayer));
+                currentAnim = AnimState.StairsIdle;
             }
-            return; // ¡Crucial! Salimos aquí para que no reproduzca animaciones de salto o correr
+            return;
         }
 
-
-        // 2. Actualizar animaciones de salto
+        // 3. Salto
         if (!playerController.jump.IsGrounded)
         {
-            if (playerController.rb.linearVelocity.y > 0.1f)
+            float velY = playerController.rb.linearVelocity.y;
+            if (velY > 0.1f)
             {
                 if (currentAnim != AnimState.JumpStart)
                 {
@@ -66,7 +60,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
                     currentAnim = AnimState.JumpStart;
                 }
             }
-            else if (playerController.rb.linearVelocity.y < -0.1f)
+            else if (velY < -0.1f)
             {
                 if (currentAnim != AnimState.JumpEnd)
                 {
@@ -77,7 +71,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
             return;
         }
 
-        // 3. Actualizar animaciones de crouch
+        // 4. Agachado
         if (Mathf.RoundToInt(move.y) == -1 || !playerController.crouch.canStandUp)
         {
             if (playerController.movement.IsMoving)
@@ -88,18 +82,15 @@ public class UpdateAnimsPlayer : MonoBehaviour
                     currentAnim = AnimState.CrouchRun;
                 }
             }
-            else
+            else if (currentAnim != AnimState.CrouchIdle)
             {
-                if (currentAnim != AnimState.CrouchIdle)
-                {
-                    animationManager.SetState(new IdleCrouchPlayerStateAnim(playerController.animPlayer));
-                    currentAnim = AnimState.CrouchIdle;
-                }
+                animationManager.SetState(new IdleCrouchPlayerStateAnim(playerController.animPlayer));
+                currentAnim = AnimState.CrouchIdle;
             }
             return;
         }
 
-        // 4. Actualizar animaciones de movimiento            
+        // 5. Movimiento Terrestre
         if (playerController.movement.IsMoving)
         {
             if (currentAnim != AnimState.Run)
@@ -108,13 +99,10 @@ public class UpdateAnimsPlayer : MonoBehaviour
                 currentAnim = AnimState.Run;
             }
         }
-        else
+        else if (currentAnim != AnimState.Idle)
         {
-            if (currentAnim != AnimState.Idle)
-            {
-                animationManager.SetState(new IdlePlayerStateAnim(playerController.animPlayer));
-                currentAnim = AnimState.Idle;
-            }
+            animationManager.SetState(new IdlePlayerStateAnim(playerController.animPlayer));
+            currentAnim = AnimState.Idle;
         }
     }
 }
