@@ -32,7 +32,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
 
 
         // NUEVO BLOQUE: 2. Animaciones de Escaleras
-        if (playerController.stairs.isStairs)
+        if (playerController.stairs.IsStairs)
         {
             // Verificamos si el jugador está presionando los controles para moverse
             if (Mathf.Abs(move.x) > 0.1f || Mathf.Abs(move.y) > 0.1f)

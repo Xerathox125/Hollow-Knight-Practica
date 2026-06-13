@@ -17,8 +17,8 @@ public class PlayerController : MonoBehaviour
     public float crouchSpeed;
 
     [Header("Variables de Salto")]
-    public float normalGravity = 2f;
-    public float fallGravity = 4f;
+    public float normalGravity;
+    public float fallGravity;
 
     // MECÁNICAS
     [HideInInspector] public UpdateAnimsPlayer updateAnimsPlayer;
@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(!stairs.isStairs)
+        if(!stairs.IsStairs)
             movement.Move();
         stairs.OnFixedUpdate();
     }
@@ -94,7 +94,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnDash(InputAction.CallbackContext context)
     {
-        if(stairs.isStairs) // Evitamos que el jugador pueda hacer dash mientras está en las escaleras
+        if(stairs.IsStairs) // Evitamos que el jugador pueda hacer dash mientras está en las escaleras
             return; 
 
         dash.DashHold();        

@@ -1,17 +1,22 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 
 public class PlayerDash : MonoBehaviour
 {
-    [Header("Dash")]
+    [Header("Dash Config")]
     public float dashForce;
     public float dashDuration;
     public float coolDownDash;
     public bool isDash = false;
 
-    [Header("Dash AÈreo (Token)")]
-    public bool hasAirDashed = false; // Esta es la variable que act˙a como "cargo" o "token"
+    [Header("Dash A√©reo (Token)")]
+    [SerializeField] private bool _hasAirDashed = false;
+    public bool hasAirDashed
+    {
+        get => _hasAirDashed;
+        set => _hasAirDashed = value;
+    }
 
-    // Timers
+    [Header("Timers")]
     public float timerDashDuration = 0f;
     public float timerCoolDownDash = 0f;
 
@@ -31,9 +36,8 @@ public class PlayerDash : MonoBehaviour
             timerCoolDownDash -= Time.deltaTime;
         }
 
-        // 2. RECARGAR EL TOKEN A…REO
-        // Si tocamos el suelo, recuperamos la habilidad de hacer Dash en el aire
-        if (playerController.jump.IsGrounded)
+        // 2. Recargar el token a√©reo (Solo si est√° en el suelo y NO est√° en medio de un dash)
+        if (playerController.jump.IsGrounded && !isDash)
         {
             hasAirDashed = false;
         }
@@ -49,22 +53,10 @@ public class PlayerDash : MonoBehaviour
         isDash = true;
         timerDashDuration = dashDuration;
 
-        // Quitamos la gravedad para que no haga una par·bola rara
+        // Quitamos la gravedad para evitar par√°bolas extra√±as durante el trayecto
         playerController.rb.gravityScale = 0f;
 
-        // 3. GASTAR EL TOKEN O APLICAR COOLDOWN
-        if (playerController.jump.IsGrounded)
-        {
-            // Si estamos en el suelo, aplicamos el cooldown de tiempo
-            timerCoolDownDash = coolDownDash;
-        }
-        else
-        {
-            // Si estamos en el aire, gastamos el token
-            hasAirDashed = true;
-        }
-
-        // Verificar la direcciÛn del dash
+        // 1. Verificar la direcci√≥n elegida mediante el input
         Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>();
 
         if (move.x > 0.5f && move.y > 0.5f) dashDirection = new Vector2(1, 1).normalized;
@@ -80,12 +72,27 @@ public class PlayerDash : MonoBehaviour
             float lookDirection = Mathf.Sign(transform.localScale.x);
             dashDirection = new Vector2(lookDirection, 0f);
         }
+
+        // 2. Evaluar si gasta el token del aire o aplica cooldown del suelo
+        if (playerController.jump.IsGrounded)
+        {
+            timerCoolDownDash = coolDownDash;
+        }
+        else
+        {
+            hasAirDashed = true;
+        }
+
+        // 3. Regala de seguridad: Si el dash va hacia arriba, el token se consume
+        if (dashDirection.y > 0.1f)
+        {
+            hasAirDashed = true;
+        }
     }
 
     void DashUpdate()
     {
         playerController.rb.linearVelocity = dashDirection * dashForce;
-
         timerDashDuration -= Time.deltaTime;
 
         if (timerDashDuration <= 0)
@@ -99,22 +106,17 @@ public class PlayerDash : MonoBehaviour
         isDash = false;
         playerController.rb.gravityScale = playerController.normalGravity;
 
-        // Frenado seco en ambos ejes (para que no salgas volando)
+        // Frenado seco en ambos ejes al terminar
         playerController.rb.linearVelocity = Vector2.zero;
     }
 
     public void DashHold()
     {
-        // 4. NUEVA L”GICA DE VALIDACI”N
-        if (!isDash)
+        if (!isDash && !playerController.stairs.IsStairs)
         {
-            // CondiciÛn para dash en el suelo
             bool canGroundDash = playerController.jump.IsGrounded && timerCoolDownDash <= 0;
-
-            // CondiciÛn para dash en el aire
             bool canAirDash = !playerController.jump.IsGrounded && !hasAirDashed;
 
-            // Si cumplimos alguna de las dos, ejecutamos el Dash
             if (canGroundDash || canAirDash)
             {
                 DashStart();

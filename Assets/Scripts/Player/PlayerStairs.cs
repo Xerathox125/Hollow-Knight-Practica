@@ -7,8 +7,10 @@ public class PlayerStairs : MonoBehaviour
     [Header("Escaleras")]
     public float stairsSpeed; //Velocidad de movimiento mientras escalamos
     public bool rangeStairs; //Deecta si estamos en el rango de la escalera para escalarla
-    public bool isStairs;  //Determina si estamos en una escalera o no
+    private bool isStairs;  //Determina si estamos en una escalera o no
 
+    //Getters
+    public bool IsStairs { get => isStairs; }
 
     private void Start()
     {
