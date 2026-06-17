@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     public Controles controles; // Objeto de control de InputSystem
 
     [Header("Variables Movimiento")]
-    public float speed; // Velocidad de movimiento normal
+    public float currentSpeed; // Velocidad de movimiento normal
     public float crouchSpeed; // Velocidad mientras se está agachado
 
     [Header("Variables de Salto")]
@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public PlayerCrouch crouch; // Referencia al script de agacharse
     [HideInInspector] public PlayerDash dash; // Referencia al script de dash
     [HideInInspector] public PlayerStairs stairs; // Referencia al script de escaleras
+    [HideInInspector] public PlayerSwim swim; // Referencia al script de escaleras
 
     [HideInInspector] public bool isJumpHeld = false; // Estado para saber si el salto sigue presionado
 
@@ -40,6 +41,7 @@ public class PlayerController : MonoBehaviour
         crouch = GetComponent<PlayerCrouch>(); // Obtiene script de agachado
         dash = GetComponent<PlayerDash>(); // Obtiene script de dash
         stairs = GetComponent<PlayerStairs>(); // Obtiene script de escaleras
+        swim = GetComponent<PlayerSwim>();
     }
 
     void Update()
@@ -51,6 +53,7 @@ public class PlayerController : MonoBehaviour
         crouch.OnUpdate(); // Llama al update de agacharse
         dash.OnUpdate(); // Llama al update de dash
         stairs.OnUpdate(); // Llama al update de escaleras
+        swim.OnUpdate(); //Llama al update de nado
         updateAnimsPlayer.UpdateAnimation(); // Actualiza el estado visual
     }
 
@@ -97,6 +100,10 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerStay2D(Collider2D collision) // Detecta permanencia en triggers
     {
         if (collision.CompareTag("Stairs")) stairs.rangeStairs = true; // Marca que está cerca de escalera
+        if (collision.CompareTag("Water"))
+        {
+            swim.rangeSwim = true;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision) // Detecta salida de triggers
@@ -105,6 +112,12 @@ public class PlayerController : MonoBehaviour
         {
             stairs.rangeStairs = false; // Desmarca proximidad a escalera
             if (stairs.IsStairs) stairs.ExitStairs(); // Sale de escaleras si estaba en ellas
+        }
+
+        if (collision.CompareTag("Water"))
+        {
+            swim.rangeSwim = false;
+            swim.ExitSwim();
         }
     }
 }

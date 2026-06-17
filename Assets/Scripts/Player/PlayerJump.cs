@@ -11,6 +11,7 @@ public class PlayerJump : MonoBehaviour
     public LayerMask groundMask; // Capas que cuentan como suelo
     public float jumpRelease; // Multiplicador para reducir la altura del salto al soltar el botón
     private bool isGrounded; // Estado que indica si está tocando el suelo
+    public float waterJumpReduction = 2.5f; //Mientras más alto sea este valor, menos saltará el personaje en el agua
 
     [Header("Coyote Time")]
     public float coyoteTime; // Tiempo permitido para saltar tras dejar una plataforma
@@ -79,6 +80,12 @@ public class PlayerJump : MonoBehaviour
 
     public void JumpHold() // Acción al presionar botón de salto
     {
+        if (playerController.swim.IsSwim) //Si está en el agua
+        {
+            playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, jumpForce / waterJumpReduction);
+            return;
+        }
+
         if (playerController.stairs.IsStairs) // Si está en escaleras
         {
             playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, jumpForce); // Salta desde escalera

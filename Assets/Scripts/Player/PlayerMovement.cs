@@ -3,6 +3,9 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     private PlayerController playerController; // Referencia al controlador
+
+    [Header("Move")]
+    public float moveSpeed;
     private bool isFacingRight = true; // Dirección actual del sprite
     private bool isMoving; // Estado de movimiento
 
@@ -17,10 +20,19 @@ public class PlayerMovement : MonoBehaviour
 
     public void Move() // Aplica la física de movimiento
     {
+        if (playerController.swim.IsSwim)
+        {
+            playerController.currentSpeed = playerController.swim.speedSwim;
+        }
+        else
+        {
+            playerController.currentSpeed = moveSpeed;
+        }
+
         if (playerController.dash?.isDash == true) return; // Cancela movimiento si está haciendo dash
 
         Vector2 move = playerController.moveInput; // Obtiene input del controlador
-        float currentSpeed = playerController.crouch.isCrouching ? playerController.crouchSpeed : playerController.speed; // Elige velocidad según estado
+        float currentSpeed = playerController.crouch.isCrouching ? playerController.crouchSpeed : playerController.currentSpeed; // Elige velocidad según estado
         playerController.rb.linearVelocity = new Vector2(move.x * currentSpeed, playerController.rb.linearVelocity.y); // Aplica velocidad física
 
         if (move.x > 0 && !isFacingRight) Flip(); // Voltea derecha

@@ -6,7 +6,7 @@ public class PlayerStairs : MonoBehaviour
 
     [Header("Escaleras")]
     public float stairsSpeed; // Velocidad de movimiento en escaleras
-    public bool rangeStairs; // Indica si está en rango de colisión
+    [HideInInspector] public bool rangeStairs; // Indica si está en rango de colisión
     private bool isStairs; // Estado activo de uso de escaleras
 
     private float cooldownTimer = 0f; // Tiempo de espera para volver a subir

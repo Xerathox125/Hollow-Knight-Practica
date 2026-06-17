@@ -9227,7 +9227,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.825237, y: 3.0850148, z: -10}
+  m_LocalPosition: {x: 26.93, y: 4.69, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9502,6 +9502,7 @@ GameObject:
   - component: {fileID: 550543011}
   - component: {fileID: 550543012}
   - component: {fileID: 550543013}
+  - component: {fileID: 550543014}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -9582,7 +9583,7 @@ Transform:
   m_GameObject: {fileID: 550543003}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.22, y: -1.07, z: 0}
+  m_LocalPosition: {x: 26.93, y: 4.69, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -9604,7 +9605,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   animPlayer: {fileID: 0}
   collPlayer: {fileID: 0}
-  speed: 8.3
+  currentSpeed: 8.3
   crouchSpeed: 5.3
   normalGravity: 3
   fallGravity: 5
@@ -9614,6 +9615,7 @@ MonoBehaviour:
   crouch: {fileID: 0}
   dash: {fileID: 0}
   stairs: {fileID: 0}
+  swim: {fileID: 0}
   isJumpHeld: 0
   moveInput: {x: 0, y: 0}
 --- !u!114 &550543008
@@ -9628,6 +9630,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66d8340188b35d74aafb1df7505c05f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
+  moveSpeed: 8.3
 --- !u!114 &550543009
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9659,6 +9662,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   jumpRelease: 0.1
+  waterJumpReduction: 2.5
   coyoteTime: 0.1
   coyoteCounter: 0
   bufferJumpTime: 0.1
@@ -9713,6 +9717,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStairs
   stairsSpeed: 5
   rangeStairs: 0
+--- !u!114 &550543014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550543003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abe77ebefba85d24a866f4ca9860be0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSwim
+  gravitySwim: 0.7
+  speedSwim: 5
+  salidaDelAguaSalto: 10
+  rangeSwim: 0
 --- !u!1 &553712301
 GameObject:
   m_ObjectHideFlags: 0
@@ -20379,7 +20399,7 @@ Transform:
   m_GameObject: {fileID: 1901076165}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.22, y: -1.07, z: -10}
+  m_LocalPosition: {x: 26.93, y: 4.69, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
