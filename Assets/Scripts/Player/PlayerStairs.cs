@@ -2,57 +2,55 @@ using UnityEngine;
 
 public class PlayerStairs : MonoBehaviour
 {
-    private PlayerController playerController;
+    private PlayerController playerController; // Referencia al controlador
 
     [Header("Escaleras")]
-    public float stairsSpeed;
-    public bool rangeStairs;
-    private bool isStairs;
+    public float stairsSpeed; // Velocidad de movimiento en escaleras
+    public bool rangeStairs; // Indica si está en rango de colisión
+    private bool isStairs; // Estado activo de uso de escaleras
 
-    private float cooldownTimer = 0f;
+    private float cooldownTimer = 0f; // Tiempo de espera para volver a subir
 
-    // Expresión de cuerpo para simplificar sintaxis
-    public bool IsStairs => isStairs;
+    public bool IsStairs => isStairs; // Propiedad pública de estado
 
-    private void Start() => playerController = GetComponent<PlayerController>();
+    private void Start() => playerController = GetComponent<PlayerController>(); // Inicializa referencia
 
-    public void OnUpdate()
+    public void OnUpdate() // Lógica de actualización de escaleras
     {
-        if (cooldownTimer > 0f) cooldownTimer -= Time.deltaTime;
-        DetectStairs();
+        if (cooldownTimer > 0f) cooldownTimer -= Time.deltaTime; // Reduce cooldown
+        DetectStairs(); // Comprueba si debe entrar a escaleras
     }
 
-    public void OnFixedUpdate() => MoveStairs();
+    public void OnFixedUpdate() => MoveStairs(); // Ejecuta movimiento físico
 
-    void DetectStairs()
+    void DetectStairs() // Lógica para entrar a las escaleras
     {
-        // Optimizamos usando el moveInput pre-calculado
-        if (rangeStairs && !isStairs && cooldownTimer <= 0f && playerController.moveInput.y > 0.5f)
+        if (rangeStairs && !isStairs && cooldownTimer <= 0f && playerController.moveInput.y > 0.5f) // Condición de entrada
         {
-            StartStairs();
+            StartStairs(); // Inicia estado
         }
     }
 
-    void StartStairs()
+    void StartStairs() // Configura estado de escaleras
     {
-        isStairs = true;
-        playerController.rb.gravityScale = 0f;
-        playerController.rb.linearVelocity = Vector2.zero;
+        isStairs = true; // Activa modo escaleras
+        playerController.rb.gravityScale = 0f; // Elimina gravedad
+        playerController.rb.linearVelocity = Vector2.zero; // Detiene inercia
     }
 
-    void MoveStairs()
+    void MoveStairs() // Lógica de movimiento vectorial
     {
-        if (!isStairs) return;
+        if (!isStairs) return; // Sale si no está en escaleras
 
-        playerController.rb.gravityScale = 0f;
-        Vector2 move = playerController.moveInput; // Input optimizado
-        playerController.rb.linearVelocity = move * stairsSpeed; // Multiplicación directa vectorial (más rápido que hacer new Vector2)
+        playerController.rb.gravityScale = 0f; // Mantiene gravedad cero
+        Vector2 move = playerController.moveInput; // Input actual
+        playerController.rb.linearVelocity = move * stairsSpeed; // Aplica velocidad de movimiento
     }
 
-    public void ExitStairs(float cooldown = 0f)
+    public void ExitStairs(float cooldown = 0f) // Salida del modo escaleras
     {
-        isStairs = false;
-        cooldownTimer = cooldown;
-        playerController.rb.gravityScale = playerController.normalGravity;
+        isStairs = false; // Desactiva estado
+        cooldownTimer = cooldown; // Aplica tiempo de espera si es necesario
+        playerController.rb.gravityScale = playerController.normalGravity; // Restaura gravedad normal
     }
 }

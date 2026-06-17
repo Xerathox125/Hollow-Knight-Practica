@@ -2,52 +2,51 @@ using UnityEngine;
 
 public class PlayerCrouch : MonoBehaviour
 {
-    private PlayerController playerController;
-    private Vector2 originalCollOffset;
-    private Vector2 originalCollSize;
+    private PlayerController playerController; // Referencia al controlador
+    private Vector2 originalCollOffset; // Offset original del colisionador
+    private Vector2 originalCollSize; // Tamaño original del colisionador
 
     [Header("Crouch")]
-    public float rayCheckOffset;
-    public float rayCheckDistance;
-    public LayerMask headCollision;
+    public float rayCheckOffset; // Desplazamiento del rayo de verificación
+    public float rayCheckDistance; // Distancia para comprobar techo
+    public LayerMask headCollision; // Capas que bloquean levantarse
 
-    public bool canStandUp => CanStandUp();
-    public bool isCrouching { get; private set; }
+    public bool canStandUp => CanStandUp(); // Propiedad para verificar si puede levantarse
+    public bool isCrouching { get; private set; } // Estado de agachado
 
-    private void Start()
+    private void Start() // Inicializa parámetros al comenzar
     {
-        playerController = GetComponent<PlayerController>();
-        originalCollOffset = playerController.collPlayer.offset;
-        originalCollSize = playerController.collPlayer.size;
+        playerController = GetComponent<PlayerController>(); // Cache del controlador
+        originalCollOffset = playerController.collPlayer.offset; // Guarda offset original
+        originalCollSize = playerController.collPlayer.size; // Guarda tamaño original
     }
 
-    public void OnUpdate()
+    public void OnUpdate() // Actualiza lógica de agacharse por frame
     {
-        // Si presionamos hacia abajo O NO podemos pararnos por el techo
-        if (Mathf.RoundToInt(playerController.moveInput.y) == -1 || !CanStandUp())
+        if (Mathf.RoundToInt(playerController.moveInput.y) == -1 || !CanStandUp()) // Verifica input o techo
         {
-            isCrouching = true;
-            playerController.collPlayer.offset = new Vector2(playerController.collPlayer.offset.x, -0.35f);
-            playerController.collPlayer.size = new Vector2(playerController.collPlayer.size.x, 0.80f); // Se quitó el valor negativo de altura
+            isCrouching = true; // Marca como agachado
+            playerController.collPlayer.offset = new Vector2(playerController.collPlayer.offset.x, -0.35f); // Ajusta offset para colisionador pequeño
+            playerController.collPlayer.size = new Vector2(playerController.collPlayer.size.x, 0.80f); // Ajusta tamaño para colisionador pequeño
         }
-        else
+        else // Si no hay necesidad de agacharse
         {
-            isCrouching = false;
-            playerController.collPlayer.offset = originalCollOffset;
-            playerController.collPlayer.size = originalCollSize;
+            isCrouching = false; // Marca como parado
+            playerController.collPlayer.offset = originalCollOffset; // Restaura offset original
+            playerController.collPlayer.size = originalCollSize; // Restaura tamaño original
         }
     }
 
-    private bool CanStandUp()
+    private bool CanStandUp() // Verifica si hay espacio sobre la cabeza
     {
-        Vector2 originPointRay = (Vector2)transform.position + Vector2.up * rayCheckOffset;
-        return Physics2D.Raycast(originPointRay, Vector2.up, rayCheckDistance, headCollision).collider == null;
+        Vector2 originPointRay = (Vector2)transform.position + Vector2.up * rayCheckOffset; // Define origen del rayo
+        return Physics2D.Raycast(originPointRay, Vector2.up, rayCheckDistance, headCollision).collider == null; // Retorna true si no hay nada arriba
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmos() // Visualización del rayo de comprobación
     {
-        Gizmos.color = Color.green;
-        Vector2 originPointRay = (Vector2)transform.position + Vector2.up * rayCheckOffset;
-        Gizmos.DrawRay(originPointRay, Vector2.up * rayCheckDistance);
+        Gizmos.color = Color.green; // Color del gizmo
+        Vector2 originPointRay = (Vector2)transform.position + Vector2.up * rayCheckOffset; // Origen del rayo
+        Gizmos.DrawRay(originPointRay, Vector2.up * rayCheckDistance); // Dibuja línea de debug
     }
 }

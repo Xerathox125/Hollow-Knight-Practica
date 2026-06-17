@@ -2,116 +2,116 @@ using UnityEngine;
 
 public class PlayerJump : MonoBehaviour
 {
-    private PlayerController playerController;
+    private PlayerController playerController; // Referencia al controlador principal
 
     [Header("Variables Salto")]
-    public float jumpForce;
-    public float groundRadius;
-    public float groundCheckDistance;
-    public LayerMask groundMask;
-    public float jumpRelease;
-    private bool isGrounded;
+    public float jumpForce; // Fuerza aplicada al saltar
+    public float groundRadius; // Radio del círculo para detectar suelo
+    public float groundCheckDistance; // Distancia de detección del suelo
+    public LayerMask groundMask; // Capas que cuentan como suelo
+    public float jumpRelease; // Multiplicador para reducir la altura del salto al soltar el botón
+    private bool isGrounded; // Estado que indica si está tocando el suelo
 
     [Header("Coyote Time")]
-    public float coyoteTime;
-    public float coyoteCounter;
-    private bool hasJumped = false;
+    public float coyoteTime; // Tiempo permitido para saltar tras dejar una plataforma
+    public float coyoteCounter; // Contador descendente del coyote time
+    private bool hasJumped = false; // Flag para evitar múltiples saltos
 
     [Header("Buffer Time")]
-    public float bufferJumpTime;
-    public float bufferJumpCounter;
+    public float bufferJumpTime; // Tiempo de espera para ejecutar un salto pre-presionado
+    public float bufferJumpCounter; // Contador descendente del buffer de salto
 
-    public bool IsGrounded => isGrounded;
+    public bool IsGrounded => isGrounded; // Acceso público al estado de suelo
 
-    public void Awake() => playerController = GetComponent<PlayerController>();
+    public void Awake() => playerController = GetComponent<PlayerController>(); // Inicializa referencia al controlador
 
-    public void OnUpdate()
+    public void OnUpdate() // Lógica de actualización de saltos
     {
-        CheckGround();
-        JumpUpdates();
+        CheckGround(); // Verifica contacto con el suelo
+        JumpUpdates(); // Procesa físicas y contadores de salto
     }
 
-    public void CheckGround()
+    public void CheckGround() // Ejecuta detección de suelo mediante CircleCast
     {
-        RaycastHit2D hit = Physics2D.CircleCast(transform.position, groundRadius, Vector2.down, groundCheckDistance, groundMask);
-        isGrounded = hit.collider != null;
+        RaycastHit2D hit = Physics2D.CircleCast(transform.position, groundRadius, Vector2.down, groundCheckDistance, groundMask); // Lanza círculo de detección
+        isGrounded = hit.collider != null; // Actualiza el estado de suelo
     }
 
-    public void JumpUpdates()
+    public void JumpUpdates() // Gestión de estados, gravedades y buffers
     {
-        Vector2 currentVel = playerController.rb.linearVelocity;
+        Vector2 currentVel = playerController.rb.linearVelocity; // Captura velocidad actual
 
-        if (isGrounded)
+        if (isGrounded) // Si está tocando suelo
         {
-            coyoteCounter = coyoteTime;
-            hasJumped = false;
-            playerController.rb.gravityScale = playerController.normalGravity;
+            coyoteCounter = coyoteTime; // Resetea contador de coyote time
+            hasJumped = false; // Permite saltar de nuevo
+            playerController.rb.gravityScale = playerController.normalGravity; // Restaura gravedad normal
         }
-        else
+        else // Si está en el aire
         {
-            coyoteCounter -= Time.deltaTime;
-            if (currentVel.y < -0.1f) playerController.rb.gravityScale = playerController.fallGravity;
+            coyoteCounter -= Time.deltaTime; // Reduce contador de coyote time
+            if (currentVel.y < -0.1f) playerController.rb.gravityScale = playerController.fallGravity; // Aplica gravedad de caída
         }
 
-        if (bufferJumpCounter > 0)
+        if (bufferJumpCounter > 0) // Si hay un salto pendiente en buffer
         {
-            bufferJumpCounter -= Time.deltaTime;
+            bufferJumpCounter -= Time.deltaTime; // Reduce el contador
 
-            if (isGrounded)
+            if (isGrounded) // Si toca suelo mientras el buffer está activo
             {
-                currentVel.y = jumpForce;
-                coyoteCounter = 0;
-                bufferJumpCounter = 0;
+                currentVel.y = jumpForce; // Aplica fuerza de salto
+                coyoteCounter = 0; // Invalida coyote time
+                bufferJumpCounter = 0; // Limpia el buffer
 
-                if (!playerController.isJumpHeld)
+                if (!playerController.isJumpHeld) // Si el botón no está presionado al tocar suelo
                 {
-                    currentVel.y *= jumpRelease;
-                    playerController.rb.gravityScale = playerController.fallGravity;
+                    currentVel.y *= jumpRelease; // Reduce la fuerza del salto
+                    playerController.rb.gravityScale = playerController.fallGravity; // Aplica gravedad de caída
                 }
             }
         }
 
-        float maxFallSpeed = -20f;
-        if (currentVel.y < maxFallSpeed) currentVel.y = maxFallSpeed;
+        float maxFallSpeed = -20f; // Límite de velocidad de caída
+        if (currentVel.y < maxFallSpeed) currentVel.y = maxFallSpeed; // Clampeo de velocidad vertical
 
-        playerController.rb.linearVelocity = currentVel;
+        playerController.rb.linearVelocity = currentVel; // Aplica velocidad calculada al rigidbody
     }
 
-    public void JumpHold()
+    public void JumpHold() // Acción al presionar botón de salto
     {
-        if (playerController.stairs.IsStairs)
+        if (playerController.stairs.IsStairs) // Si está en escaleras
         {
-            playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, jumpForce);
-            playerController.stairs.ExitStairs(0.2f);
-            return;
+            playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, jumpForce); // Salta desde escalera
+            playerController.stairs.ExitStairs(0.2f); // Sale de la escalera
+            return; // Sale del método
         }
 
-        if ((isGrounded || coyoteCounter > 0) && !hasJumped)
+        if ((isGrounded || coyoteCounter > 0) && !hasJumped) // Si puede saltar (coyote o suelo)
         {
-            playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, jumpForce);
-            playerController.rb.gravityScale = playerController.normalGravity;
-            coyoteCounter = 0;
-            hasJumped = true;
+            playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, jumpForce); // Aplica fuerza
+            playerController.rb.gravityScale = playerController.normalGravity; // Restaura gravedad
+            coyoteCounter = 0; // Limpia coyote
+            hasJumped = true; // Marca que ha saltado
         }
-        else
+        else // Si no puede saltar en el momento
         {
-            bufferJumpCounter = bufferJumpTime;
+            bufferJumpCounter = bufferJumpTime; // Activa buffer de salto
         }
     }
 
-    public void JumpRelease()
+    public void JumpRelease() // Acción al soltar botón de salto
     {
-        if (playerController.rb.linearVelocity.y > 0)
+        if (playerController.rb.linearVelocity.y > 0) // Si está subiendo
         {
-            playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, playerController.rb.linearVelocity.y * jumpRelease);
+            playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, playerController.rb.linearVelocity.y * jumpRelease); // Reduce velocidad vertical
         }
-        playerController.rb.gravityScale = playerController.fallGravity;
-        hasJumped = true;
+        playerController.rb.gravityScale = playerController.fallGravity; // Aplica gravedad de caída
+        hasJumped = true; // Marca salto como ejecutado
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmos() // Dibujo de debug para detección de suelo
     {
-        Gizmos.color = isGrounded ? Color.green : Color.red;
-        Gizmos.DrawWireSphere(transform.position + Vector3.down * groundCheckDistance, groundRadius);
+        Gizmos.color = isGrounded ? Color.green : Color.red; // Cambia color según estado
+        Gizmos.DrawWireSphere(transform.position + Vector3.down * groundCheckDistance, groundRadius); // Dibuja círculo de colisión
     }
 }
