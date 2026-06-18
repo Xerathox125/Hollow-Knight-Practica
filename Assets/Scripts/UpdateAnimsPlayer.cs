@@ -29,6 +29,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
             return; // Interrumpe la ejecución para priorizar el Dash
         }
 
+        // 2. Nado
         if (playerController.swim.IsSwim)
         {
             if (Mathf.Abs(move.x) > 0.1f || Mathf.Abs(move.y) > 0.1f) // Comprueba si el jugador se está moviendo en el agua
@@ -42,10 +43,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
             return; // Evita otras animaciones
         }
 
-
-
-
-        // 2. Escaleras
+        // 3. Escaleras
         if (playerController.stairs.IsStairs) // Verifica si el jugador está interactuando con escaleras
         {
             if (Mathf.Abs(move.x) > 0.1f || Mathf.Abs(move.y) > 0.1f) // Comprueba si el jugador se está moviendo en la escalera
@@ -64,7 +62,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
             return; // Interrumpe la ejecución
         }
 
-        // 3. Salto
+        // 4. Salto
         if (!playerController.jump.IsGrounded) // Verifica si el jugador está en el aire
         {
             float velY = playerController.rb.linearVelocity.y; // Obtiene la velocidad vertical actual
@@ -87,7 +85,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
             return; // Interrumpe la ejecución
         }
 
-        // 4. Agachado
+        // 5. Agachado
         if (Mathf.RoundToInt(move.y) == -1 || !playerController.crouch.canStandUp) // Detecta si el jugador intenta agacharse o está bloqueado
         {
             if (playerController.movement.IsMoving) // Verifica si el jugador se desplaza mientras está agachado
@@ -106,7 +104,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
             return; // Interrumpe la ejecución
         }
 
-        // 5. Movimiento Terrestre
+        // 6. Movimiento Terrestre
         if (playerController.movement.IsMoving) // Verifica si el jugador se mueve en el suelo
         {
             if (currentAnim != AnimState.Run) // Si no está ya corriendo

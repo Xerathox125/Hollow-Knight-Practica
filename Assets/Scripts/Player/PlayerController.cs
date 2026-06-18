@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -23,10 +24,12 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public PlayerDash dash; // Referencia al script de dash
     [HideInInspector] public PlayerStairs stairs; // Referencia al script de escaleras
     [HideInInspector] public PlayerSwim swim; // Referencia al script de escaleras
+    [HideInInspector] public PlayerStomp stomp;
 
     [HideInInspector] public bool isJumpHeld = false; // Estado para saber si el salto sigue presionado
-
     [HideInInspector] public Vector2 moveInput; // Cache del input de movimiento para evitar lecturas constantes
+
+
 
     void Awake()
     {
@@ -42,6 +45,7 @@ public class PlayerController : MonoBehaviour
         dash = GetComponent<PlayerDash>(); // Obtiene script de dash
         stairs = GetComponent<PlayerStairs>(); // Obtiene script de escaleras
         swim = GetComponent<PlayerSwim>();
+        stomp = GetComponent<PlayerStomp>();
     }
 
     void Update()
@@ -54,6 +58,7 @@ public class PlayerController : MonoBehaviour
         dash.OnUpdate(); // Llama al update de dash
         stairs.OnUpdate(); // Llama al update de escaleras
         swim.OnUpdate(); //Llama al update de nado
+        stomp.OnUpdate();
         updateAnimsPlayer.UpdateAnimation(); // Actualiza el estado visual
     }
 
@@ -70,7 +75,8 @@ public class PlayerController : MonoBehaviour
         controles.Player.Jump.performed += OnJump; // Suscribe evento de presionar salto
         controles.Player.Jump.canceled += OnJumpRelease; // Suscribe evento de soltar salto
         controles.Player.Dash.performed += OnDash; // Suscribe evento de presionar dash
-    }
+        controles.Player.Stomp.performed += OnStomp;
+    }    
 
     private void OnDisable()
     {
@@ -78,6 +84,7 @@ public class PlayerController : MonoBehaviour
         controles.Player.Jump.performed -= OnJump; // Desuscribe salto
         controles.Player.Jump.canceled -= OnJumpRelease; // Desuscribe soltar salto
         controles.Player.Dash.performed -= OnDash; // Desuscribe dash
+        controles.Player.Stomp.performed += OnStomp;
     }
 
     private void OnJump(InputAction.CallbackContext context) // Método llamado al saltar
@@ -95,6 +102,11 @@ public class PlayerController : MonoBehaviour
     private void OnDash(InputAction.CallbackContext context) // Método llamado al hacer dash
     {
         if (!stairs.IsStairs) dash.DashHold(); // Ejecuta dash si no está en escaleras
+    }
+
+    private void OnStomp(InputAction.CallbackContext context)
+    {
+        stomp.StompHold();
     }
 
     private void OnTriggerStay2D(Collider2D collision) // Detecta permanencia en triggers
@@ -120,4 +132,6 @@ public class PlayerController : MonoBehaviour
             swim.ExitSwim();
         }
     }
+
+
 }
