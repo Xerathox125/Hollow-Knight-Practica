@@ -16,6 +16,8 @@ public class UpdateAnimsPlayer : MonoBehaviour
 
     public void UpdateAnimation() // Función principal para actualizar el estado del animador
     {
+        Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>(); // Lee el input de movimiento actual
+
         // 1. Dash
         if (playerController.dash != null && playerController.dash.isDash) // Verifica si el componente dash existe y está activo
         {
@@ -27,7 +29,21 @@ public class UpdateAnimsPlayer : MonoBehaviour
             return; // Interrumpe la ejecución para priorizar el Dash
         }
 
-        Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>(); // Lee el input de movimiento actual
+        if (playerController.swim.IsSwim)
+        {
+            if (Mathf.Abs(move.x) > 0.1f || Mathf.Abs(move.y) > 0.1f) // Comprueba si el jugador se está moviendo en el agua
+            {
+                animationManager.SetState(new MoveSwimPlayerStateAnim(playerController.animPlayer)); // Asigna estado de movimiento en el agua                
+            }
+            else if (currentAnim != AnimState.StairsIdle) // Si está en el agua pero quieto
+            {
+                animationManager.SetState(new IdleSwimPlayerStateAnim(playerController.animPlayer)); // Asigna estado de reposo en agua
+            }
+            return; // Evita otras animaciones
+        }
+
+
+
 
         // 2. Escaleras
         if (playerController.stairs.IsStairs) // Verifica si el jugador está interactuando con escaleras
