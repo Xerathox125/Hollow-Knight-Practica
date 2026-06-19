@@ -57,7 +57,7 @@ public class PlayerDash : MonoBehaviour
     {
         isDash = true; // Activa estado
         timerDashDuration = dashDuration; // Resetea duración
-        playerController.rb.gravityScale = 0f; // Elimina gravedad
+        playerController.rb.gravityScale = 0f; // Elimina gravedad temporalmente
 
         Vector2 move = playerController.moveInput; // Lee input actual
 
@@ -88,6 +88,6 @@ public class PlayerDash : MonoBehaviour
     {
         isDash = false; // Desactiva estado
         playerController.rb.gravityScale = playerController.normalGravity; // Restaura gravedad
-        playerController.rb.linearVelocity = Vector2.zero; // Detiene movimiento
+        playerController.rb.linearVelocity = Vector2.zero; // Detiene movimiento residual
     }
 }

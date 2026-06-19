@@ -11,7 +11,7 @@ public class PlayerJump : MonoBehaviour
     public LayerMask groundMask; // Capas que cuentan como suelo
     public float jumpRelease; // Multiplicador para reducir la altura del salto al soltar el botón
     private bool isGrounded; // Estado que indica si está tocando el suelo
-    public float waterJumpReduction = 2.5f; //Mientras más alto sea este valor, menos saltará el personaje en el agua
+    public float waterJumpReduction = 2.5f; // Mientras más alto sea este valor, menos saltará el personaje en el agua
 
     [Header("Coyote Time")]
     public float coyoteTime; // Tiempo permitido para saltar tras dejar una plataforma
@@ -51,7 +51,7 @@ public class PlayerJump : MonoBehaviour
         else // Si está en el aire
         {
             coyoteCounter -= Time.deltaTime; // Reduce contador de coyote time
-            if (currentVel.y < -0.1f) playerController.rb.gravityScale = playerController.fallGravity; // Aplica gravedad de caída
+            if (currentVel.y < -0.1f) playerController.rb.gravityScale = playerController.fallGravity; // Aplica gravedad de caída al descender
         }
 
         if (bufferJumpCounter > 0) // Si hay un salto pendiente en buffer
@@ -66,30 +66,30 @@ public class PlayerJump : MonoBehaviour
 
                 if (!playerController.isJumpHeld) // Si el botón no está presionado al tocar suelo
                 {
-                    currentVel.y *= jumpRelease; // Reduce la fuerza del salto
+                    currentVel.y *= jumpRelease; // Reduce la fuerza del salto (salto corto)
                     playerController.rb.gravityScale = playerController.fallGravity; // Aplica gravedad de caída
                 }
             }
         }
 
         float maxFallSpeed = -20f; // Límite de velocidad de caída
-        if (currentVel.y < maxFallSpeed) currentVel.y = maxFallSpeed; // Clampeo de velocidad vertical
+        if (currentVel.y < maxFallSpeed) currentVel.y = maxFallSpeed; // Clampeo de velocidad vertical para no atravesar suelos
 
         playerController.rb.linearVelocity = currentVel; // Aplica velocidad calculada al rigidbody
     }
 
     public void JumpHold() // Acción al presionar botón de salto
     {
-        if (playerController.swim.IsSwim) //Si está en el agua
+        if (playerController.swim.IsSwim) // Si está en el agua
         {
-            playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, jumpForce / waterJumpReduction);
+            playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, jumpForce / waterJumpReduction); // Salto reducido
             return;
         }
 
         if (playerController.stairs.IsStairs) // Si está en escaleras
         {
             playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, jumpForce); // Salta desde escalera
-            playerController.stairs.ExitStairs(0.2f); // Sale de la escalera
+            playerController.stairs.ExitStairs(0.2f); // Sale de la escalera con cooldown
             return; // Sale del método
         }
 
@@ -102,7 +102,7 @@ public class PlayerJump : MonoBehaviour
         }
         else // Si no puede saltar en el momento
         {
-            bufferJumpCounter = bufferJumpTime; // Activa buffer de salto
+            bufferJumpCounter = bufferJumpTime; // Activa buffer de salto por si toca el suelo pronto
         }
     }
 
@@ -110,7 +110,7 @@ public class PlayerJump : MonoBehaviour
     {
         if (playerController.rb.linearVelocity.y > 0) // Si está subiendo
         {
-            playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, playerController.rb.linearVelocity.y * jumpRelease); // Reduce velocidad vertical
+            playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, playerController.rb.linearVelocity.y * jumpRelease); // Reduce velocidad vertical bruscamente
         }
         playerController.rb.gravityScale = playerController.fallGravity; // Aplica gravedad de caída
         hasJumped = true; // Marca salto como ejecutado

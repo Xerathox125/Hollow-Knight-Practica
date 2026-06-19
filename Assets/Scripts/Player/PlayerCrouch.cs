@@ -23,7 +23,7 @@ public class PlayerCrouch : MonoBehaviour
 
     public void OnUpdate() // Actualiza lógica de agacharse por frame
     {
-        if (Mathf.RoundToInt(playerController.moveInput.y) == -1 || !CanStandUp()) // Verifica input o techo
+        if (Mathf.RoundToInt(playerController.moveInput.y) == -1 || !CanStandUp()) // Verifica input hacia abajo o si hay techo
         {
             isCrouching = true; // Marca como agachado
             playerController.collPlayer.offset = new Vector2(playerController.collPlayer.offset.x, -0.35f); // Ajusta offset para colisionador pequeño
@@ -43,7 +43,7 @@ public class PlayerCrouch : MonoBehaviour
         return Physics2D.Raycast(originPointRay, Vector2.up, rayCheckDistance, headCollision).collider == null; // Retorna true si no hay nada arriba
     }
 
-    private void OnDrawGizmos() // Visualización del rayo de comprobación
+    private void OnDrawGizmos() // Visualización del rayo de comprobación en el editor
     {
         Gizmos.color = Color.green; // Color del gizmo
         Vector2 originPointRay = (Vector2)transform.position + Vector2.up * rayCheckOffset; // Origen del rayo

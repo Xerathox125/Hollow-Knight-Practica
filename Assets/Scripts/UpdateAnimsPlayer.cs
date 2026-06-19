@@ -5,8 +5,8 @@ public class UpdateAnimsPlayer : MonoBehaviour
     private AnimationManager animationManager; // Gestor encargado de cambiar el estado de la animación
     private PlayerController playerController; // Referencia al controlador principal del jugador
 
-    private enum AnimState { None, Idle, Run, JumpStart, JumpEnd, CrouchIdle, CrouchRun, Dash, StairsIdle, StairsMove } // Estados posibles de la animación
-    private AnimState currentAnim = AnimState.None; // Variable para trackear el estado actual y evitar reinicios innecesarios
+    private enum AnimState { None, Idle, Run, JumpStart, JumpEnd, CrouchIdle, CrouchRun, Dash, StairsIdle, StairsMove } // Enumerador de estados posibles de la animación
+    private AnimState currentAnim = AnimState.None; // Variable para trackear el estado actual y evitar reinicios innecesarios en el Animator
 
     private void Awake() // Se ejecuta al inicializar el componente
     {
@@ -14,33 +14,33 @@ public class UpdateAnimsPlayer : MonoBehaviour
         playerController = GetComponent<PlayerController>(); // Obtiene la referencia al PlayerController
     }
 
-    public void UpdateAnimation() // Función principal para actualizar el estado del animador
+    public void UpdateAnimation() // Función principal para actualizar el estado del animador frame a frame
     {
         Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>(); // Lee el input de movimiento actual
 
-        // 1. Dash
+        // 1. Dash (Prioridad más alta)
         if (playerController.dash != null && playerController.dash.isDash) // Verifica si el componente dash existe y está activo
         {
             if (currentAnim != AnimState.Dash) // Comprueba si no estamos ya en estado Dash
             {
                 animationManager.SetState(new DashPlayerStateAnim(playerController.animPlayer)); // Asigna el estado de Dash
-                currentAnim = AnimState.Dash; // Actualiza el estado actual
+                currentAnim = AnimState.Dash; // Actualiza el estado actual para la validación
             }
-            return; // Interrumpe la ejecución para priorizar el Dash
+            return; // Interrumpe la ejecución para no sobreescribir la animación
         }
 
         // 2. Nado
-        if (playerController.swim.IsSwim)
+        if (playerController.swim.IsSwim) // Verifica si está en estado de nado
         {
             if (Mathf.Abs(move.x) > 0.1f || Mathf.Abs(move.y) > 0.1f) // Comprueba si el jugador se está moviendo en el agua
             {
                 animationManager.SetState(new MoveSwimPlayerStateAnim(playerController.animPlayer)); // Asigna estado de movimiento en el agua                
             }
-            else if (currentAnim != AnimState.StairsIdle) // Si está en el agua pero quieto
+            else if (currentAnim != AnimState.StairsIdle) // Si está en el agua pero quieto (NOTA: Revisa si deberías comparar contra un SwimIdle en lugar de StairsIdle)
             {
                 animationManager.SetState(new IdleSwimPlayerStateAnim(playerController.animPlayer)); // Asigna estado de reposo en agua
             }
-            return; // Evita otras animaciones
+            return; // Evita otras animaciones terrestres
         }
 
         // 3. Escaleras
@@ -70,7 +70,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
             {
                 if (currentAnim != AnimState.JumpStart) // Si no está en estado de inicio de salto
                 {
-                    animationManager.SetState(new JumpStartPlayerStateAnim(playerController.animPlayer)); // Asigna inicio de salto
+                    animationManager.SetState(new JumpStartPlayerStateAnim(playerController.animPlayer)); // Asigna inicio de salto (subida)
                     currentAnim = AnimState.JumpStart; // Actualiza el estado actual
                 }
             }
@@ -78,7 +78,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
             {
                 if (currentAnim != AnimState.JumpEnd) // Si no está en estado de fin de salto
                 {
-                    animationManager.SetState(new JumpEndPlayerStateAnim(playerController.animPlayer)); // Asigna fin de salto
+                    animationManager.SetState(new JumpEndPlayerStateAnim(playerController.animPlayer)); // Asigna fin de salto (caída)
                     currentAnim = AnimState.JumpEnd; // Actualiza el estado actual
                 }
             }
@@ -86,7 +86,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
         }
 
         // 5. Agachado
-        if (Mathf.RoundToInt(move.y) == -1 || !playerController.crouch.canStandUp) // Detecta si el jugador intenta agacharse o está bloqueado
+        if (Mathf.RoundToInt(move.y) == -1 || !playerController.crouch.canStandUp) // Detecta si el jugador intenta agacharse o está bloqueado por un techo
         {
             if (playerController.movement.IsMoving) // Verifica si el jugador se desplaza mientras está agachado
             {
@@ -104,7 +104,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
             return; // Interrumpe la ejecución
         }
 
-        // 6. Movimiento Terrestre
+        // 6. Movimiento Terrestre Normal
         if (playerController.movement.IsMoving) // Verifica si el jugador se mueve en el suelo
         {
             if (currentAnim != AnimState.Run) // Si no está ya corriendo
@@ -115,7 +115,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
         }
         else if (currentAnim != AnimState.Idle) // Si el jugador está quieto en el suelo
         {
-            animationManager.SetState(new IdlePlayerStateAnim(playerController.animPlayer)); // Asigna estado de reposo
+            animationManager.SetState(new IdlePlayerStateAnim(playerController.animPlayer)); // Asigna estado de reposo normal
             currentAnim = AnimState.Idle; // Actualiza el estado actual
         }
     }
