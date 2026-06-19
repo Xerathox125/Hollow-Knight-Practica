@@ -9750,6 +9750,7 @@ MonoBehaviour:
   stompForce: 40
   impulseUpForce: 5
   timeImpuseUp: 0.2
+  hangTime: 0.2
 --- !u!1 &553712301
 GameObject:
   m_ObjectHideFlags: 0
