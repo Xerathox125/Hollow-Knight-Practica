@@ -46,10 +46,24 @@ public class PlayerSwim : MonoBehaviour
     {
         if (isSwim)
         {
-            // Aplicamos gravedad reducida
+            // 1. Aplicamos gravedad reducida
             playerController.rb.gravityScale = gravityScaleSwim;
 
-            // Input de salto (predeterminado)
+            // 2. Lógica de Movimiento
+            Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>();
+
+            if (move.magnitude > 0.1f)
+            {
+                // Movemos al personaje manteniendo su velocidad en Y (para no afectar la gravedad/salto)
+                playerController.rb.linearVelocity = new Vector2(move.x * speedSwim, playerController.rb.linearVelocity.y);
+            }
+            else
+            {
+                // Si no hay input, detenemos solo la velocidad horizontal
+                playerController.rb.linearVelocity = new Vector2(0, playerController.rb.linearVelocity.y);
+            }
+
+            // 3. Input de salto (predeterminado)
             if (playerController.controles.Player.Jump.triggered)
             {
                 // Reseteamos velocidad Y para que el salto siempre sea igual de alto
