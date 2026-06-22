@@ -40,6 +40,11 @@ public class PlayerJump : MonoBehaviour
 
     public void JumpUpdates() // Gestión de estados, gravedades y buffers
     {
+        // 1. Protección de Nado: Salimos inmediatamente si estamos en el agua
+        if (playerController.swim != null && playerController.swim.IsSwim)
+        {
+            return;
+        }
         Vector2 currentVel = playerController.rb.linearVelocity; // Captura velocidad actual
 
         if (isGrounded) // Si está tocando suelo

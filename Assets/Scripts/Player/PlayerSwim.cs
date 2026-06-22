@@ -11,6 +11,10 @@ public class PlayerSwim : MonoBehaviour
     [HideInInspector] public bool rangeSwim; // Indica si está colisionando con el trigger de agua
     private bool isSwim; // Estado activo de nado
 
+    [Header("Configuración Mario-Style")]
+    public float gravityScaleSwim; // Gravedad más baja (flotante)
+    public float jumpForceSwim;      // Fuerza fija del salto en agua
+
     public bool IsSwim => isSwim; // Getter público
 
     private void Start()
@@ -38,11 +42,20 @@ public class PlayerSwim : MonoBehaviour
         playerController.rb.linearVelocity = Vector2.zero; // Al entrar al agua se resetean las velocidades
     }
 
-    void MoveSwim(float cooldown = 0f) // OPTIMIZADO: Parámetro cooldown no se usa, pero se mantiene. Aplica gravedad de nado
+    void MoveSwim()
     {
-        if (isSwim) // Si está nadando
+        if (isSwim)
         {
-            playerController.rb.gravityScale = gravitySwim; // Cambia la gravedad a la del agua
+            // Aplicamos gravedad reducida
+            playerController.rb.gravityScale = gravityScaleSwim;
+
+            // Input de salto (predeterminado)
+            if (playerController.controles.Player.Jump.triggered)
+            {
+                // Reseteamos velocidad Y para que el salto siempre sea igual de alto
+                playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, 0);
+                playerController.rb.AddForce(Vector2.up * jumpForceSwim, ForceMode2D.Impulse);
+            }
         }
     }
 
