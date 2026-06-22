@@ -6,7 +6,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
     private PlayerController playerController;
 
     // Se añaden SwimIdle y SwimMove para proteger el estado de nado
-    private enum AnimState { None, Idle, Run, JumpStart, JumpEnd, CrouchIdle, CrouchRun, Dash, StairsIdle, StairsMove, SwimIdle, SwimMove }
+    private enum AnimState { None, Idle, Run, JumpStart, JumpEnd, CrouchIdle, CrouchRun, Dash, StairsIdle, StairsMove, SwimIdle, SwimMove, WallIdle }
     private AnimState currentAnim = AnimState.None;
 
     private void Awake()
@@ -56,7 +56,14 @@ public class UpdateAnimsPlayer : MonoBehaviour
             return;
         }
 
-        // 4. Salto
+        // 4. WallJump
+        if (playerController.wallJump.IsWall && !playerController.jump.IsGrounded)
+        {
+            TrySetAnim(AnimState.WallIdle, new IdleHandWallPlayerStateAnim(playerController.animPlayer));
+            return;
+        }
+
+        // 5. Salto
         if (!playerController.jump.IsGrounded)
         {
             float velY = playerController.rb.linearVelocity.y;
@@ -67,7 +74,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
             return;
         }
 
-        // 5. Agachado
+        // 6. Agachado
         if (Mathf.RoundToInt(move.y) == -1 || !playerController.crouch.canStandUp)
         {
             if (playerController.movement.IsMoving)
@@ -77,7 +84,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
             return;
         }
 
-        // 6. Movimiento Terrestre Normal
+        // 7. Movimiento Terrestre Normal
         if (playerController.movement.IsMoving)
             TrySetAnim(AnimState.Run, new RunPlayerStateAnim(playerController.animPlayer));
         else
