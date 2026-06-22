@@ -80,6 +80,12 @@ public class PlayerJump : MonoBehaviour
 
     public void JumpHold() // Acción al presionar botón de salto
     {
+        if (playerController.wallJump != null && playerController.wallJump.IsWall && playerController.jump.isGrounded) // si el player está en walljump, al preisonar salgo(jumphold), hace un impulso en diagonal hacia el lado contrario
+        {
+            playerController.wallJump.WallJump();
+            return;
+        }
+
         if (playerController.swim.IsSwim) // Si está en el agua
         {
             playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, jumpForce / waterJumpReduction); // Salto reducido

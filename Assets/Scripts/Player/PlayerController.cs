@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public PlayerStairs stairs; // Referencia al script de escaleras
     [HideInInspector] public PlayerSwim swim; // Referencia al script de nado
     [HideInInspector] public PlayerStomp stomp; // Referencia al script de stomp
+    [HideInInspector] public PlayerWallJump wallJump; // Referencia al script de walljump
 
     [HideInInspector] public bool isJumpHeld = false; // Estado para saber si el salto sigue presionado
     [HideInInspector] public Vector2 moveInput; // Cache del input de movimiento para evitar lecturas constantes
@@ -44,6 +45,7 @@ public class PlayerController : MonoBehaviour
         stairs = GetComponent<PlayerStairs>(); // Obtiene script de escaleras
         swim = GetComponent<PlayerSwim>(); // Obtiene script de nado
         stomp = GetComponent<PlayerStomp>(); // Obtiene script de stomp
+        wallJump = GetComponent<PlayerWallJump>(); // Obtiene script de wallJump
     }
 
     void Update()
@@ -51,20 +53,23 @@ public class PlayerController : MonoBehaviour
         moveInput = controles.Player.Move.ReadValue<Vector2>(); // Lee el vector de movimiento una vez por frame
 
         movement.OnUpdate(); // Llama al update de movimiento
-        jump.OnUpdate(); // Llama al update de salto
         crouch.OnUpdate(); // Llama al update de agacharse
         dash.OnUpdate(); // Llama al update de dash
         stairs.OnUpdate(); // Llama al update de escaleras
         swim.OnUpdate(); // Llama al update de nado
         stomp.OnUpdate(); // Llama al update de stomp
+        wallJump.OnUpdate(); //Ejecuta físicas del walljump
         updateAnimsPlayer.UpdateAnimation(); // Actualiza el estado visual
+
     }
 
     private void FixedUpdate()
     {
+        jump.OnUpdate(); // Ejecuta física de salto
         movement.Move(); // Ejecuta física de movimiento
         dash.OnFixedUpdate(); // Ejecuta física de dash
         stairs.OnFixedUpdate(); // Ejecuta física de escaleras
+        
     }
 
     private void OnEnable()
