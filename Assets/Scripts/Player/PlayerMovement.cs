@@ -54,28 +54,19 @@ public class PlayerMovement : MonoBehaviour
         float currentSpeed = playerController.crouch.isCrouching ? playerController.crouchSpeed : playerController.currentSpeed; // Elige velocidad según estado (agachado vs normal)
 
         //Verificamos el margen de tiempo cuando estamos en el muro y bloqueamos movimiento del jugador durante ese margen de tiempo
+        // Dentro de Move()
         if (playerController.wallJump != null && playerController.wallJump.IsWall)
         {
-            //Verificar el input contrario
-            int dirFacing;
-            if (isFacingRight)
-            {
-                dirFacing = 1;
-            }
-            else
-            {
-                dirFacing = -1;
-            }
+            float inputX = playerController.moveInput.x;
+            // Si el jugador intenta moverse en dirección opuesta a la pared, anulamos el input X
+            bool isPressingTowardsWall = isFacingRight ? (inputX > 0.1f) : (inputX < -0.1f);
 
-            if (move.x * dirFacing < -0.2f)
+            if (!isPressingTowardsWall)
             {
-                //verificar el oppositeInputTime
-                if (!playerController.wallJump.CanMoveOpposite())
-                {
-                    move.x = 0;
-                }
+                move.x = 0;
             }
         }
+
 
         if (pressInputX || (playerController.jump != null && playerController.jump.IsGrounded)) //Si estamos oprimiendo el input X y estamos en el suelo
         {

@@ -10734,8 +10734,8 @@ Transform:
   m_GameObject: {fileID: 438233785}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 65.91, y: 0.3727, z: 0}
-  m_LocalScale: {x: 14.997961, y: 4.5541816, z: 1}
+  m_LocalPosition: {x: 65.91, y: 0.2823, z: 0}
+  m_LocalScale: {x: 14.997961, y: 4.373558, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 277162692}
@@ -11705,7 +11705,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.510008, y: 3.085015, z: -10}
+  m_LocalPosition: {x: 57.22, y: 4.44, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12063,7 +12063,7 @@ Transform:
   m_GameObject: {fileID: 550543003}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.51, y: -0.97, z: 0}
+  m_LocalPosition: {x: 57.22, y: 4.44, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -12211,10 +12211,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abe77ebefba85d24a866f4ca9860be0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSwim
-  gravitySwim: 0.7
+  gravitySwim: 0.8
   speedSwim: 5
   salidaDelAguaSalto: 10
   rangeSwim: 0
+  gravityScaleSwim: 0.5
+  jumpForceSwim: 5
 --- !u!114 &550543015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23067,7 +23069,7 @@ Transform:
   m_GameObject: {fileID: 1901076165}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.51, y: -0.97, z: -10}
+  m_LocalPosition: {x: 57.22, y: 4.44, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -9,6 +9,7 @@ public class PlayerWallJump : MonoBehaviour
     //Variables para crear el raycast
     public float rayCheckDistance; // Distancia del raycast para detectar paredes
     public LayerMask wallLayer; // Identifica que el layer será considerado una pared
+    private float graceTimer = 0; // Asegúrate de tener esta variable definida en la clase
 
     [Header("Bloqueo de Input")]
     public float wallJumpDuration = 0.2f; // El tiempo que el jugador no puede controlar el input
@@ -27,8 +28,6 @@ public class PlayerWallJump : MonoBehaviour
 
     //Variables para saltar correctamente de pared en otra, congelando inputs por milésimas de segundo
     public float unStickCooldown; // Tiempo espera para volver a sostenerse en un muro luego de dejarnos caer cuando estábamos sostenidos
-    public float oppositeInputTime; // Tiempo que el jugador sostiene el input contrario para soltarse de un muro
-    private float oppositeInputCounter = 0; // Contador del oppositeInputTime
 
     private bool isWall; //Si estamos sostenidos en un muro
     private bool isWallJump; //Si estamos saltando de un muro
@@ -39,12 +38,7 @@ public class PlayerWallJump : MonoBehaviour
     private void Awake()
     {
         playerController = GetComponent<PlayerController>();
-    }
-
-    public bool CanMoveOpposite()
-    {
-        return oppositeInputCounter >= oppositeInputTime;
-    }
+    }   
 
     public void OnUpdate()
     {
@@ -64,7 +58,6 @@ public class PlayerWallJump : MonoBehaviour
         {
             isWall = false;
             isWallJump = false;
-            oppositeInputCounter = 0;
             return;
         }
 
@@ -133,53 +126,50 @@ public class PlayerWallJump : MonoBehaviour
 
     public void UpdateWallJump()
     {
-        if (isWall && !playerController.jump.IsGrounded) //Estamos en el muro y no estamos en el suelo
+        if (isWall && !playerController.jump.IsGrounded)
         {
-            //-------------------------------------------------
-            //Verificar input contrario y dar margen de tiempo
-            //-------------------------------------------------
-
-            //Vector en donde se almacena el input del jugador que se recibe desde PlayerController
+            // 1. Obtenemos el input actual
             Vector2 input = playerController.controles.Player.Move.ReadValue<Vector2>();
 
-            //Verifica si estamos presionando una tecla de dirección contraria a la que estamos sostenidas del muro
-            if ((playerController.movement.IsFacingRight && input.x < -0.2f) && (!playerController.movement.IsFacingRight && input.x > 0.2f))
-            {
-                oppositeInputCounter += Time.fixedDeltaTime;
+            // 2. Determinamos si el jugador está presionando hacia el muro
+            bool isPressingWall = playerController.movement.IsFacingRight ? (input.x > 0.1f) : (input.x < -0.1f);
 
-                //Detecta si se cumplió el tiempo máximo de mantener la tecla opuesta en un muro para dejar caer al jugador
-                if (oppositeInputCounter >= oppositeInputTime)
+            // 3. Lógica de despegue y ventana de salto
+            if (!isPressingWall)
+            {
+                graceTimer += Time.deltaTime;
+
+                if (graceTimer >= unStickCooldown)
                 {
                     isWall = false;
                     canAttach = false;
-                    oppositeInputCounter = 0;
                     coolDownWallTimer = unStickCooldown;
-
-                    return;
+                    graceTimer = 0;
+                    return; // Salimos: al no retornar, aplicaría slideWallSpeed, aquí se corta
                 }
             }
-            else //Si el jugador se arrpiente y oprimer el input hacia el mismo muro, el counter se regresa a 0 para que se siga manteniendo pegado al muro
+            else
             {
-                oppositeInputCounter = 0;
+                graceTimer = 0; // Reseteamos si vuelve a presionar hacia el muro
             }
 
-            //-----------------------------------------------------------------------
-            //Aplicamos gravedad para que el player se deslice hacia abajo de a pocos
-            //-----------------------------------------------------------------------
-            if (!isWallJump && playerController.rb.linearVelocity.y < slideWallSpeed)
+            // 4. Aplicamos deslizamiento SOLO si estamos presionando hacia el muro
+            // (Esto evita que se quede "pegado" flotando si suelta la tecla)
+            if (isPressingWall && !isWallJump && playerController.rb.linearVelocity.y < slideWallSpeed)
+            {
                 playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, slideWallSpeed);
+            }
 
-            //--------------------------------------------------------------
-            //Llamamos a wallJump en caso de que el jugador oprima saltar
-            //--------------------------------------------------------------
+            // 5. Salto desde el muro
             if (playerController.controles.Player.Jump.triggered)
             {
                 WallJump();
-                oppositeInputCounter = 0;
             }
         }
         else
-            oppositeInputCounter = 0;
+        {
+            graceTimer = 0;
+        }
     }
 
     public void WallJump()
@@ -200,6 +190,5 @@ public class PlayerWallJump : MonoBehaviour
         //Llamar a SetFacing desde PlayerMovement
         playerController.movement.SetFacing(dirX.x > 0f);
         isWall = false;
-        oppositeInputCounter = 0;
     }
 }

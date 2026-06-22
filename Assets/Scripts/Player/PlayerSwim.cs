@@ -24,9 +24,10 @@ public class PlayerSwim : MonoBehaviour
 
     public void OnUpdate()
     {
-        DetectSwim(); // Revisa si debe entrar al estado de nado
-        MoveSwim(); // Aplica físicas de nado
+        DetectSwim();
+        if (isSwim) MoveSwim(); // Solo ejecuta física si está nadando
     }
+
 
     void DetectSwim() // Lógica para entrar al agua
     {
@@ -44,32 +45,16 @@ public class PlayerSwim : MonoBehaviour
 
     void MoveSwim()
     {
-        if (isSwim)
+        playerController.rb.gravityScale = gravitySwim; // Gravedad constante
+
+        Vector2 move = playerController.moveInput;
+        // Movimiento fluido pero con parada inmediata
+        playerController.rb.linearVelocity = new Vector2(move.x * speedSwim, playerController.rb.linearVelocity.y);
+
+        if (playerController.controles.Player.Jump.triggered)
         {
-            // 1. Aplicamos gravedad reducida
-            playerController.rb.gravityScale = gravityScaleSwim;
-
-            // 2. Lógica de Movimiento
-            Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>();
-
-            if (move.magnitude > 0.1f)
-            {
-                // Movemos al personaje manteniendo su velocidad en Y (para no afectar la gravedad/salto)
-                playerController.rb.linearVelocity = new Vector2(move.x * speedSwim, playerController.rb.linearVelocity.y);
-            }
-            else
-            {
-                // Si no hay input, detenemos solo la velocidad horizontal
-                playerController.rb.linearVelocity = new Vector2(0, playerController.rb.linearVelocity.y);
-            }
-
-            // 3. Input de salto (predeterminado)
-            if (playerController.controles.Player.Jump.triggered)
-            {
-                // Reseteamos velocidad Y para que el salto siempre sea igual de alto
-                playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, 0);
-                playerController.rb.AddForce(Vector2.up * jumpForceSwim, ForceMode2D.Impulse);
-            }
+            playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, 0);
+            playerController.rb.AddForce(Vector2.up * jumpForceSwim, ForceMode2D.Impulse);
         }
     }
 
