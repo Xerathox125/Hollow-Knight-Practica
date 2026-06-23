@@ -11705,7 +11705,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.960007, y: 3.0850148, z: -10}
+  m_LocalPosition: {x: 14.389996, y: 3.0850148, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12063,7 +12063,7 @@ Transform:
   m_GameObject: {fileID: 550543003}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.96, y: -0.06, z: 0}
+  m_LocalPosition: {x: 14.39, y: -1.12, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -12182,7 +12182,6 @@ MonoBehaviour:
   dashDuration: 0.3
   coolDownDash: 0.8
   isDash: 0
-  _hasAirDashed: 0
   timerDashDuration: 0.3
   timerCoolDownDash: 0
 --- !u!114 &550543013
@@ -12197,8 +12196,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 764083f9a924b3d428aeb1f78404d0ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStairs
-  stairsSpeed: 5
   rangeStairs: 0
+  stairsSpeed: 5
 --- !u!114 &550543014
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23068,7 +23067,7 @@ Transform:
   m_GameObject: {fileID: 1901076165}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.96, y: -0.06, z: -10}
+  m_LocalPosition: {x: 14.39, y: -1.12, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

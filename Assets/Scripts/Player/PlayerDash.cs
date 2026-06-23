@@ -3,36 +3,30 @@
 public class PlayerDash : MonoBehaviour
 {
     [Header("Dash Config")]
-    public float dashForce; // Potencia del impulso
-    public float dashDuration; // Duración del dash
-    public float coolDownDash; // Tiempo de enfriamiento
-    public bool isDash = false; // Indica si el jugador está en estado dash
-
-    [Header("Dash Aéreo (Token)")]
-    [SerializeField] private bool _hasAirDashed = false; // Flag privado para controlar el dash aéreo
-    public bool hasAirDashed // Propiedad pública para acceder al estado aéreo
-    {
-        get => _hasAirDashed; // Retorna el valor
-        set => _hasAirDashed = value; // Permite modificar el valor
-    }
+    public float dashForce;                    // Potencia del impulso
+    public float dashDuration;                 // Duración del dash
+    public float coolDownDash;                 // Tiempo de enfriamiento
+    public bool isDash = false;                // Indica si el jugador está en estado dash
 
     [Header("Timers")]
-    public float timerDashDuration = 0f; // Tiempo restante del dash actual
-    public float timerCoolDownDash = 0f; // Tiempo restante para enfriamiento
+    public float timerDashDuration = 0f;       // Tiempo restante del dash actual
+    public float timerCoolDownDash = 0f;       // Tiempo restante para enfriamiento
 
-    private Vector2 dashDirection; // Dirección en la que se aplicará el dash
+    private Vector2 dashDirection;             // Dirección en la que se aplicará el dash
     private PlayerController playerController; // Referencia al controlador
 
-    private void Start() => playerController = GetComponent<PlayerController>(); // Cachea controlador
+    //Getters y setters
+    public bool hasAirDashed { get; set; }
+
+    private void Start() // Cachea controlador
+    { 
+        playerController = GetComponent<PlayerController>(); 
+    }
 
     public void OnUpdate() // Actualiza contadores y resets
     {
-        if (timerCoolDownDash > 0f) timerCoolDownDash -= Time.deltaTime; // Reduce enfriamiento
-
-        if (playerController.jump.IsGrounded && !isDash) // Si toca suelo y no está haciendo dash
-        {
-            hasAirDashed = false; // Reinicia el token de dash aéreo
-        }
+        if (timerCoolDownDash > 0f) timerCoolDownDash -= Time.deltaTime; // Reduce enfriamiento        
+        if (playerController.jump.IsGrounded && !isDash) hasAirDashed = false; // Si toca suelo y no está haciendo dash, reinicia el token del dash aéreo        
     }
 
     public void OnFixedUpdate() // Ejecuta la lógica física durante el dash
@@ -44,36 +38,29 @@ public class PlayerDash : MonoBehaviour
     {
         if (isDash || playerController.stairs.IsStairs) return; // Cancela si ya está haciendo dash o en escaleras
 
-        bool canGroundDash = playerController.jump.IsGrounded && timerCoolDownDash <= 0f; // Comprueba si puede hacer dash en suelo
-        bool canAirDash = !playerController.jump.IsGrounded && !_hasAirDashed; // Comprueba si puede hacer dash aéreo
+        bool canGroundDash = playerController.jump.IsGrounded && timerCoolDownDash <= 0f;
+        bool canAirDash = !playerController.jump.IsGrounded && !hasAirDashed; 
 
-        if (canGroundDash || canAirDash) // Si se cumplen condiciones
-        {
-            DashStart(); // Inicia proceso
-        }
+        if (canGroundDash || canAirDash) DashStart();
     }
 
     void DashStart() // Configura el estado inicial del dash
     {
-        isDash = true; // Activa estado
+        isDash = true;
         timerDashDuration = dashDuration; // Resetea duración
         playerController.rb.gravityScale = 0f; // Elimina gravedad temporalmente
-
+        
         Vector2 move = playerController.moveInput; // Lee input actual
 
-        if (move.magnitude > 0.1f) // Si hay dirección de movimiento
-        {
-            dashDirection = move.normalized; // Usa la dirección del input
-        }
-        else // Si está quieto
-        {
-            dashDirection = new Vector2(Mathf.Sign(transform.localScale.x), 0f); // Usa dirección donde mira el jugador
-        }
+        // Operador ternario corregido
+        dashDirection = move.magnitude > 0.1f ? move.normalized : new Vector2(Mathf.Sign(transform.localScale.x), 0f);
 
-        if (playerController.jump.IsGrounded) timerCoolDownDash = coolDownDash; // Si está en suelo, activa enfriamiento
-        else hasAirDashed = true; // Si está en aire, consume el token
-
-        if (dashDirection.y > 0.1f) hasAirDashed = true; // Si dash es vertical, consume token
+        // Lógica de consumo de token
+        if (playerController.jump.IsGrounded) timerCoolDownDash = coolDownDash;
+        else hasAirDashed = true; // Aquí se marca como usado
+        
+        // Si dash es vertical, también consume token
+        if (dashDirection.y > 0.1f) hasAirDashed = true;
     }
 
     void DashUpdate() // Aplica movimiento constante mientras dura el dash

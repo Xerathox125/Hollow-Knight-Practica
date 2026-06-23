@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour
         dash.OnUpdate();
         stairs.OnUpdate();
         swim.OnUpdate();
-        stomp.OnUpdate();
+        
         wallJump.OnUpdate();
         updateAnimsPlayer.UpdateAnimation(); // Actualiza el estado visual
     }
@@ -69,6 +69,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         //Ejecución de físicas
+        stomp.OnUpdate();
         jump.OnUpdate();
         movement.Move();
         dash.OnFixedUpdate();

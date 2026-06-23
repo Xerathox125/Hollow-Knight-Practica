@@ -14,8 +14,10 @@ public class PlayerStairs : MonoBehaviour
     //Getter
     public bool IsStairs => isStairs;
 
-
-    private void Start() => playerController = GetComponent<PlayerController>(); // Inicializa referencia
+    private void Start()
+    {
+        playerController = GetComponent<PlayerController>(); // Inicializa referencia
+    } 
 
     public void OnUpdate() // Lógica de actualización de escaleras
     {
@@ -23,7 +25,10 @@ public class PlayerStairs : MonoBehaviour
         DetectStairs(); // Comprueba si debe entrar a escaleras
     }
 
-    public void OnFixedUpdate() => MoveStairs(); // Ejecuta movimiento físico
+    public void OnFixedUpdate()
+    {
+        MoveStairs(); // Ejecuta movimiento físico
+    }
 
     void DetectStairs() // Lógica para entrar a las escaleras
     {

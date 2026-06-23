@@ -5,18 +5,19 @@ public class PlayerSwim : MonoBehaviour
     private PlayerController playerController; // Referencia al controlador
 
     [Header("Nado")]
-    public float gravitySwim; // Gravedad específica al estar en el agua
-    public float speedSwim; // Velocidad de movimiento nadando
-    public float salidaDelAguaSalto; // Fuerza de impulso al salir del agua saltando
-    [HideInInspector] public bool rangeSwim; // Indica si está colisionando con el trigger de agua
-    private bool isSwim; // Estado activo de nado
-
-    [Header("Configuración Mario-Style")]
-    public float gravityScaleSwim; // Gravedad más baja (flotante)
-    public float jumpForceSwim;      // Fuerza fija del salto en agua
-
-    public bool IsSwim => isSwim; // Getter público
-
+    public float gravitySwim;                  // Gravedad específica al estar en el agua
+    public float speedSwim;                    // Velocidad de movimiento nadando
+    public float salidaDelAguaSalto;           // Fuerza de impulso al salir del agua saltando
+    [HideInInspector] public bool rangeSwim;   // Indica si está colisionando con el trigger de agua
+    private bool isSwim;                       // Estado activo de nado
+                                               
+    [Header("Configuración Mario-Style")]      
+    public float gravityScaleSwim;             // Gravedad más baja (flotante)
+    public float jumpForceSwim;                // Fuerza fija del salto en agua
+                                               
+    //Getters & Setters
+    public bool IsSwim => isSwim;              // Getter público
+                                               
     private void Start()
     {
         playerController = GetComponent<PlayerController>(); // Cache del controlador
@@ -28,13 +29,9 @@ public class PlayerSwim : MonoBehaviour
         if (isSwim) MoveSwim(); // Solo ejecuta física si está nadando
     }
 
-
     void DetectSwim() // Lógica para entrar al agua
     {
-        if (rangeSwim && !isSwim) // Si toca el agua y no estaba nadando
-        {
-            StartSwim(); // Inicia nado
-        }
+        if (rangeSwim && !isSwim) StartSwim(); // Si toca el agua y no estaba nadando, inicia nado
     }
 
     void StartSwim() // Lógica inicial al tocar el agua

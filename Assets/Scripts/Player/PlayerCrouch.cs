@@ -7,18 +7,19 @@ public class PlayerCrouch : MonoBehaviour
     private Vector2 originalCollSize;          // Tamaño original del colisionador
 
     [Header("Crouch")]
-    public float rayCheckOffset;    // Desplazamiento del rayo de verificación
-    public float rayCheckDistance;  // Distancia para comprobar techo
-    public LayerMask headCollision; // Capas que bloquean levantarse
+    public float rayCheckOffset;               // Desplazamiento del rayo de verificación
+    public float rayCheckDistance;             // Distancia para comprobar techo
+    public LayerMask headCollision;            // Capas que bloquean levantarse
 
+    //Getters y Setters
     public bool canStandUp => CanStandUp(); // Propiedad para verificar si puede levantarse
     public bool isCrouching { get; private set; } // Estado de agachado
 
     private void Start() // Inicializa parámetros al comenzar
     {
-        playerController = GetComponent<PlayerController>(); // Cache del controlador
+        playerController = GetComponent<PlayerController>();     // Cache del controlador
         originalCollOffset = playerController.collPlayer.offset; // Guarda offset original
-        originalCollSize = playerController.collPlayer.size; // Guarda tamaño original
+        originalCollSize = playerController.collPlayer.size;     // Guarda tamaño original
     }
 
     public void OnUpdate() // Actualiza lógica de agacharse por frame

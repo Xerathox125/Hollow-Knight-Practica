@@ -69,18 +69,15 @@ public class PlayerStomp : MonoBehaviour
         else
         {
             playerController.rb.linearVelocity = Vector2.down * stompForce; // Aplica fuerza hacia abajo constantemente
-
-            if (playerController.jump.IsGrounded) // Si toca el suelo
-            {
-                EndStomp(); // Termina la acción
-            }
+            if (playerController.jump.IsGrounded) EndStomp(); // Si toca el suelo termina la acción
         }
     }
 
     public void EndStomp() // Lógica de finalización
     {
         playerController.controles.Player.Move.Enable(); // Habilitar controles movimiento
-        isStomp = false; // Resetea estados
+        // Resetea estados
+        isStomp = false; 
         isImpulse = false;
         isHanging = false;
         counterImpulseUp = 0f;
@@ -88,9 +85,6 @@ public class PlayerStomp : MonoBehaviour
 
     public void StompHold() // Validación para iniciar
     {
-        if (!isStomp && !playerController.jump.IsGrounded && !playerController.stairs.IsStairs) // Condiciones para iniciar el Stomp
-        {
-            StartStomp(); // Inicia si cumple requisitos
-        }
+        if (!isStomp && !playerController.jump.IsGrounded && !playerController.stairs.IsStairs) StartStomp(); // Inicia si cumple requisitos
     }
 }
