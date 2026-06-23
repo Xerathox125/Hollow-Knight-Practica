@@ -4,14 +4,16 @@ public class PlayerStairs : MonoBehaviour
 {
     private PlayerController playerController; // Referencia al controlador
 
+    [HideInInspector] public bool rangeStairs; // Indica si está en rango de colisión de escalera
+
     [Header("Escaleras")]
     public float stairsSpeed; // Velocidad de movimiento en escaleras
-    [HideInInspector] public bool rangeStairs; // Indica si está en rango de colisión de escalera
     private bool isStairs; // Estado activo de uso de escaleras
-
     private float cooldownTimer = 0f; // Tiempo de espera para volver a subir tras salir
 
-    public bool IsStairs => isStairs; // Propiedad pública de estado
+    //Getter
+    public bool IsStairs => isStairs;
+
 
     private void Start() => playerController = GetComponent<PlayerController>(); // Inicializa referencia
 

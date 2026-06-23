@@ -3,12 +3,12 @@ using UnityEngine;
 public class PlayerCrouch : MonoBehaviour
 {
     private PlayerController playerController; // Referencia al controlador
-    private Vector2 originalCollOffset; // Offset original del colisionador
-    private Vector2 originalCollSize; // Tamaño original del colisionador
+    private Vector2 originalCollOffset;        // Offset original del colisionador
+    private Vector2 originalCollSize;          // Tamaño original del colisionador
 
     [Header("Crouch")]
-    public float rayCheckOffset; // Desplazamiento del rayo de verificación
-    public float rayCheckDistance; // Distancia para comprobar techo
+    public float rayCheckOffset;    // Desplazamiento del rayo de verificación
+    public float rayCheckDistance;  // Distancia para comprobar techo
     public LayerMask headCollision; // Capas que bloquean levantarse
 
     public bool canStandUp => CanStandUp(); // Propiedad para verificar si puede levantarse
