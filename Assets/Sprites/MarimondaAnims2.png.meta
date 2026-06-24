@@ -566,8 +566,8 @@ TextureImporter:
         y: 664
         width: 191
         height: 169
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.48469424, y: 0.5412375}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -588,8 +588,8 @@ TextureImporter:
         y: 656
         width: 215
         height: 163
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.44561172, y: 0.5029356}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -606,12 +606,12 @@ TextureImporter:
       name: MarimondaAnims2_17
       rect:
         serializedVersion: 2
-        x: 1341
-        y: 642
+        x: 1342
+        y: 643
         width: 167
         height: 229
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.57908034, y: 0.3537007}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -632,8 +632,8 @@ TextureImporter:
         y: 656
         width: 195
         height: 172
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.619515, y: 0.5122447}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -651,11 +651,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1735
-        y: 642
+        y: 643
         width: 169
         height: 224
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.614918, y: 0.6052019}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -874,7 +874,7 @@ TextureImporter:
         y: 294
         width: 170
         height: 161
-      alignment: 0
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -896,7 +896,7 @@ TextureImporter:
         y: 297
         width: 187
         height: 163
-      alignment: 0
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -918,7 +918,7 @@ TextureImporter:
         y: 297
         width: 187
         height: 160
-      alignment: 0
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -940,7 +940,7 @@ TextureImporter:
         y: 297
         width: 175
         height: 161
-      alignment: 0
+      alignment: 9
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
@@ -962,8 +962,8 @@ TextureImporter:
         y: 289
         width: 171
         height: 169
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.54}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -980,12 +980,12 @@ TextureImporter:
       name: MarimondaAnims2_37
       rect:
         serializedVersion: 2
-        x: 949
+        x: 950
         y: 296
         width: 197
         height: 156
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.52}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1025,11 +1025,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 36
-        y: 53
+        y: 54
         width: 212
         height: 187
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.428, y: 0.428}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1046,12 +1046,12 @@ TextureImporter:
       name: MarimondaAnims2_40
       rect:
         serializedVersion: 2
-        x: 264
+        x: 266
         y: 52
         width: 199
         height: 166
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.42507872, y: 0.48403075}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1072,8 +1072,8 @@ TextureImporter:
         y: 57
         width: 177
         height: 164
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.49050543, y: 0.4680856}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1094,8 +1094,8 @@ TextureImporter:
         y: 51
         width: 191
         height: 167
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.50187385, y: 0.46526936}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1116,8 +1116,8 @@ TextureImporter:
         y: 56
         width: 209
         height: 175
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 9
+      pivot: {x: 0.5308981, y: 0.4545825}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
