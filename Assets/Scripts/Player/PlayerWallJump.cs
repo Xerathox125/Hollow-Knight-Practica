@@ -33,9 +33,10 @@ public class PlayerWallJump : MonoBehaviour
     private bool isWallJump;                           // Si estamos saltando de un muro
 
 
-
+    //Getters & Setters
     public bool IsWall => isWall;
     public bool IsWallJump => isWallJump;
+
 
     private void Awake()
     {
@@ -131,7 +132,8 @@ public class PlayerWallJump : MonoBehaviour
                 graceTimer = 0; // Reseteamos si vuelve a presionar hacia el muro
 
             // 4. Aplicamos deslizamiento SOLO si estamos presionando hacia el muro (Esto evita que se quede "pegado" flotando si suelta la tecla)
-            if (isPressingWall && !isWallJump && playerController.rb.linearVelocity.y < slideWallSpeed) playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, slideWallSpeed);
+            if (isPressingWall && !isWallJump && playerController.rb.linearVelocity.y < slideWallSpeed)
+                playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, slideWallSpeed);
 
             // 5. Salto desde el muro
             if (playerController.controles.Player.Jump.triggered) WallJump();
