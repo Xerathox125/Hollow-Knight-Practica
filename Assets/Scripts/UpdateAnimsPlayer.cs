@@ -29,14 +29,32 @@ public class UpdateAnimsPlayer : MonoBehaviour
     {
         Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>();
 
-        // 1. Dash
+        // Ataque
+        if (playerController.attacks.IsAttack)
+        {
+            if (playerController.attacks.AttackDirection == Vector2.up) //Si ataca hacia arriba
+            {
+                animationManager.SetState(new AttackUpPlayerStateAnim(playerController.animPlayer));
+            }
+            else if (playerController.attacks.AttackDirection == Vector2.down) //Si ataca hacia abajo
+            {
+                animationManager.SetState(new AttackDownPlayerStateAnim(playerController.animPlayer));
+            }
+            else //Si ataca a los lados
+            {
+                animationManager.SetState(new AttackSidePlayerStateAnim(playerController.animPlayer));
+            }
+            return; //Evitar otras animaciones
+        }
+
+        // Dash
         if (playerController.dash != null && playerController.dash.isDash)
         {
             TrySetAnim(AnimState.Dash, new DashPlayerStateAnim(playerController.animPlayer));
             return;
         }
 
-        // 2. Nado (Ahora protegido con el enum)
+        // Nado
         if (playerController.swim.IsSwim)
         {
             if (Mathf.Abs(move.x) > 0.1f || Mathf.Abs(move.y) > 0.1f)
@@ -46,7 +64,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
             return;
         }
 
-        // 3. Escaleras
+        // Escaleras
         if (playerController.stairs.IsStairs)
         {
             if (Mathf.Abs(move.x) > 0.1f || Mathf.Abs(move.y) > 0.1f)
@@ -56,14 +74,14 @@ public class UpdateAnimsPlayer : MonoBehaviour
             return;
         }
 
-        // 4. WallJump
+        // WallJump
         if (playerController.wallJump.IsWall && !playerController.jump.IsGrounded)
         {
             TrySetAnim(AnimState.WallIdle, new IdleHandWallPlayerStateAnim(playerController.animPlayer));
             return;
         }
 
-        // 5. Salto
+        // Salto
         if (!playerController.jump.IsGrounded)
         {
             float velY = playerController.rb.linearVelocity.y;
@@ -74,7 +92,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
             return;
         }
 
-        // 6. Agachado
+        // Agachado
         if (Mathf.RoundToInt(move.y) == -1 || !playerController.crouch.canStandUp)
         {
             if (playerController.movement.IsMoving)
@@ -84,7 +102,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
             return;
         }
 
-        // 7. Movimiento Terrestre Normal
+        // Movimiento Terrestre Normal
         if (playerController.movement.IsMoving)
             TrySetAnim(AnimState.Run, new RunPlayerStateAnim(playerController.animPlayer));
         else

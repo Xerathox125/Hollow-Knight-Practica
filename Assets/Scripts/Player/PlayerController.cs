@@ -29,7 +29,8 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public PlayerSwim        swim;
     [HideInInspector] public PlayerStomp       stomp;
     [HideInInspector] public PlayerWallJump    wallJump;
-        
+    [HideInInspector] public PlayerAttacks     attacks;
+
 
     void Awake()
     {
@@ -49,6 +50,7 @@ public class PlayerController : MonoBehaviour
         swim              = GetComponent<PlayerSwim>();                     
         stomp             = GetComponent<PlayerStomp>();                   
         wallJump          = GetComponent<PlayerWallJump>();             
+        attacks           = GetComponent<PlayerAttacks>();
     }
 
     void Update()
@@ -56,14 +58,13 @@ public class PlayerController : MonoBehaviour
         moveInput = controles.Player.Move.ReadValue<Vector2>(); // Lee el vector de movimiento una vez por frame
 
         //Llamada a los updates de cada script
+        updateAnimsPlayer.UpdateAnimation(); // Actualiza el estado visual
         movement.OnUpdate();
         crouch.OnUpdate();
         dash.OnUpdate();
         stairs.OnUpdate();
-        swim.OnUpdate();
-        
+        swim.OnUpdate();        
         wallJump.OnUpdate();
-        updateAnimsPlayer.UpdateAnimation(); // Actualiza el estado visual
     }
 
     private void FixedUpdate()
@@ -73,7 +74,9 @@ public class PlayerController : MonoBehaviour
         jump.OnUpdate();
         movement.Move();
         dash.OnFixedUpdate();
-        stairs.OnFixedUpdate();     
+        stairs.OnFixedUpdate();
+        attacks.OnUpdate();
+
     }
 
     private void OnEnable()
@@ -85,7 +88,10 @@ public class PlayerController : MonoBehaviour
         controles.Player.Jump.canceled   += OnJumpRelease; // Soltar salto
         controles.Player.Dash.performed  += OnDash;        // Presionar dash
         controles.Player.Stomp.performed += OnStomp;       // Presionar stomp
+        controles.Player.Attack.performed += OnAttack;       // Presionar ataque
     }
+
+    
 
     private void OnDisable()
     {
@@ -96,8 +102,10 @@ public class PlayerController : MonoBehaviour
         controles.Player.Jump.canceled   -= OnJumpRelease; // Soltar salto
         controles.Player.Dash.performed  -= OnDash;        // Presionar dash
         controles.Player.Stomp.performed -= OnStomp;       // Presionar stomp
+        controles.Player.Attack.performed -= OnAttack;       // Presionar ataque
     }
 
+    // Métodos inputs
     private void OnJump(InputAction.CallbackContext context) // Método llamado al saltar
     {
         isJumpHeld = true; // Activa flag de salto presionado
@@ -119,6 +127,13 @@ public class PlayerController : MonoBehaviour
     {
         stomp.StompHold(); // Llama a la lógica de validación de stomp
     }
+
+    private void OnAttack(InputAction.CallbackContext context)
+    {
+        attacks.AttackHold();
+    }
+
+
 
     private void OnTriggerStay2D(Collider2D collision) // Detecta permanencia en triggers
     {
