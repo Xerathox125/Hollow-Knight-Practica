@@ -10,7 +10,6 @@ public class HealthHandler : MonoBehaviour
         currentHealth = maxHealth;
     }
 
-
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
@@ -25,6 +24,5 @@ public class HealthHandler : MonoBehaviour
 
         Destroy(gameObject);
     }
-
    
 }

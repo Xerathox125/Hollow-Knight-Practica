@@ -7,7 +7,8 @@ public class PlayerAttacks : MonoBehaviour
     [Header("Ataque Player")]
     public int hitPower; //cantidad de daño hecho por el jugador
     public float attackRange = 0.6f;
-    public float attackDistance = 0.6f;   // Esto será la distancia desde el jugador (qué tan lejos "sale" el ataque)
+    public Vector2 hitBoxOffset;
+    public float pogoForce = 10f;
     public LayerMask enemyLayer;
 
     //Cooldowns
@@ -74,7 +75,7 @@ public class PlayerAttacks : MonoBehaviour
 
     public void ActiveHitbox()
     {
-        Vector2 attackPos = (Vector2)transform.position + (attackDirection * attackDistance);
+        Vector2 attackPos = (Vector2)transform.position + attackDirection * attackRange;
 
         Collider2D[] hurtEnemies = Physics2D.OverlapCircleAll(attackPos, attackRange, enemyLayer);
 
@@ -83,11 +84,21 @@ public class PlayerAttacks : MonoBehaviour
             //Aplicamos el daño
             //Health Handler
             HealthHandler healthEnemy = enemy.GetComponent<HealthHandler>();
-            if(healthEnemy != null)
-            {
+            if (healthEnemy != null)            
                 healthEnemy.TakeDamage(hitPower);
-            }
+            
+            if (attackDirection == Vector2.down)            
+                Pogo();
+            
         }
+    }
+
+    public void Pogo()
+    {
+        //Cancelamos las fuerzas y velocidades del RigidBody del player
+        playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, 0f);
+        //Aplicamos un impulso hacia arriba a nuestro jugador
+        playerController.rb.AddForce(Vector2.up * pogoForce,ForceMode2D.Impulse);
     }
 
     public void EndAttack()
@@ -98,7 +109,7 @@ public class PlayerAttacks : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        Vector2 gizmosPos = (Vector2)transform.position + (attackDirection * attackDistance);
+        Vector2 gizmosPos = (Vector2)transform.position + attackDirection * attackRange + Vector2.Scale(hitBoxOffset,attackDirection);
         Gizmos.DrawWireSphere(gizmosPos, attackRange);
     }
 
