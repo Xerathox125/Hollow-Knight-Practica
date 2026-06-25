@@ -6,13 +6,14 @@ public class PlayerAttacks : MonoBehaviour
 
     [Header("Ataque Player")]
     public int hitPower; //cantidad de daño hecho por el jugador
-    public float attackRange = 0.6f;
+    public int knockBackForce;
+    public float attackRange;
     public Vector2 hitBoxOffset;
-    public float pogoForce = 10f;
+    public float pogoForce;
     public LayerMask enemyLayer;
 
     //Cooldowns
-    public float attackCoolDown = 0.3f;
+    public float attackCoolDown;
     private float timerAttackCoolDown = 0f;
     private bool isAttack;
     private Vector2 attackDirection;
@@ -20,8 +21,7 @@ public class PlayerAttacks : MonoBehaviour
     // Getters
     public bool IsAttack => isAttack;
     public Vector2 AttackDirection => attackDirection;
-
-   
+       
 
     private void Start()
     {
@@ -75,21 +75,28 @@ public class PlayerAttacks : MonoBehaviour
 
     public void ActiveHitbox()
     {
-        Vector2 attackPos = (Vector2)transform.position + attackDirection * attackRange;
+        Vector2 attackPos = (Vector2)transform.position + attackDirection * attackRange + Vector2.Scale(hitBoxOffset, attackDirection);
 
         Collider2D[] hurtEnemies = Physics2D.OverlapCircleAll(attackPos, attackRange, enemyLayer);
 
         foreach (Collider2D enemy in hurtEnemies)
         {
             //Aplicamos el daño
+            DamageAble damageable = enemy.GetComponent<DamageAble>();
+            if (damageable != null)
+            {
+                damageable.ApplyDamage(hitPower, transform.position, knockBackForce);
+            }
+
+            /*
             //Health Handler
             HealthHandler healthEnemy = enemy.GetComponent<HealthHandler>();
             if (healthEnemy != null)            
                 healthEnemy.TakeDamage(hitPower);
+            */
             
             if (attackDirection == Vector2.down)            
-                Pogo();
-            
+                Pogo();            
         }
     }
 
@@ -109,7 +116,7 @@ public class PlayerAttacks : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        Vector2 gizmosPos = (Vector2)transform.position + attackDirection * attackRange + Vector2.Scale(hitBoxOffset,attackDirection);
+        Vector2 gizmosPos = (Vector2)transform.position + attackDirection * attackRange + Vector2.Scale(hitBoxOffset, attackDirection);
         Gizmos.DrawWireSphere(gizmosPos, attackRange);
     }
 

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class HealthHandler : MonoBehaviour
 {
-    public int maxHealth = 3;
+    public int maxHealth;
     [SerializeField] private int currentHealth;
 
     private void Awake()
