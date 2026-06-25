@@ -9,10 +9,15 @@ public class DamageAble : MonoBehaviour
 
     //Knockback
     [Header("Knockback")]
-    public bool activeKnockback = true; //Esta variable determina si el efecto de knockback aplica a este game object
-    public float knockBackDuration; //Cuanto dura el efecto
+    public bool activeKnockback = true; // Esta variable determina si el efecto de knockback aplica a este game object
+    public float knockBackDuration; // Cuanto dura el efecto
 
     // Flash
+    public bool activeFlash = true; // Esta variable determina si el efecto de Flash aplica a este game object
+    public float flashDuration = 0.1f;
+    public Material flashMaterial;
+    private Material originalMaterial;
+    private SpriteRenderer spriteRenderer;
 
     // Freeze Time 
 
@@ -24,14 +29,27 @@ public class DamageAble : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         healthHandler = GetComponent<HealthHandler>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        if (spriteRenderer != null)
+        {
+            originalMaterial = spriteRenderer.material;
+        }
     }
 
     // Aplicamos toods los efectos de Damage
     public void ApplyDamage(int damageAmount, Vector2 sourcePosition, float sourceKnockbackForce)
     {
+        //Efecto Knockback
         if (activeKnockback)
         {
             KnockBackApply(sourcePosition, sourceKnockbackForce);
+        }
+
+        //Efecto Flash
+        if (activeFlash)
+        {
+            StartCoroutine(FlashEffect());
         }
 
         healthHandler.TakeDamage(damageAmount);
@@ -59,5 +77,17 @@ public class DamageAble : MonoBehaviour
 
         // Resetear valores y fuerzas
         rb.linearVelocity = Vector2.zero;
+    }
+
+    IEnumerator FlashEffect()
+    {
+        if (spriteRenderer == null || flashMaterial == null)
+        {
+            yield break;
+        }
+
+        spriteRenderer.material = flashMaterial;
+        yield return new WaitForSeconds(flashDuration);
+        spriteRenderer.material = originalMaterial;
     }
 }
