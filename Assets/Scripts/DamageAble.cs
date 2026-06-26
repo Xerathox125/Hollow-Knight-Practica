@@ -20,6 +20,8 @@ public class DamageAble : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
     // Freeze Time 
+    public bool activeFreezeTime = true;
+    public float freezeDuration = 0.05f;
 
     // Invulnerability
 
@@ -50,6 +52,11 @@ public class DamageAble : MonoBehaviour
         if (activeFlash)
         {
             StartCoroutine(FlashEffect());
+        }
+
+        if (activeFreezeTime)
+        {
+            StartCoroutine(FreezeTimeEffect());
         }
 
         healthHandler.TakeDamage(damageAmount);
@@ -89,5 +96,13 @@ public class DamageAble : MonoBehaviour
         spriteRenderer.material = flashMaterial;
         yield return new WaitForSeconds(flashDuration);
         spriteRenderer.material = originalMaterial;
+    }
+
+    IEnumerator FreezeTimeEffect()
+    {
+        float originalTime = Time.timeScale;
+        Time.timeScale = 0;
+        yield return new WaitForSecondsRealtime(freezeDuration);
+        Time.timeScale = originalTime;
     }
 }

@@ -10666,6 +10666,8 @@ MonoBehaviour:
   activeFlash: 1
   flashDuration: 0.1
   flashMaterial: {fileID: 2100000, guid: 6c36e9f841033d94f92cebb7c5fb37d2, type: 2}
+  activeFreezeTime: 1
+  freezeDuration: 0.03
 --- !u!50 &317752393
 Rigidbody2D:
   serializedVersion: 5
