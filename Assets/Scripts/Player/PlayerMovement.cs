@@ -8,7 +8,10 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed;            // Velocidad base de movimiento
     private bool isFacingRight = true; // Dirección actual del sprite
     private bool isMoving;             // Estado de movimiento
+    [HideInInspector] public bool onKnockBack;
 
+
+    //Getters y Setters
     public bool IsMoving => isMoving;  // Propiedad pública para acceder al estado
     public bool IsFacingRight => isFacingRight;
 
@@ -25,6 +28,8 @@ public class PlayerMovement : MonoBehaviour
         Vector2 move = playerController.moveInput; // Obtiene input del controlador
         bool pressInputX = Mathf.Abs(move.x) > 0.5f;
         float currentSpeed = playerController.crouch.isCrouching ? playerController.crouchSpeed : playerController.currentSpeed; // Elige velocidad según estado (agachado vs normal)
+
+        if (onKnockBack) return; // Si ocurre knockback, return
 
         if (playerController.wallJump != null && playerController.wallJump.isWallJumpActive) return; // Si estamos haciendo haciendo WallJump, impedimos el movimiento horizontal y salimos de la función sin aplicar el velocity.x del input
 
