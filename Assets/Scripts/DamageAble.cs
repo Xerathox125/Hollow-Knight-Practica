@@ -1,32 +1,39 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.Timeline;
 
-public class DamageAble : MonoBehaviour
+public class Damageable : MonoBehaviour
 {
     private Rigidbody2D rb;
     private HealthHandler healthHandler;
 
     //Knockback
-    [Header("Knockback")]
+    [Header("Knockback Effect")]
     public bool activeKnockback = true; // Esta variable determina si el efecto de knockback aplica a este game object
     public float knockBackDuration; // Cuanto dura el efecto
 
     // Flash
+    [Header("Flash Effect")]
     public bool activeFlash = true; // Esta variable determina si el efecto de Flash aplica a este game object
-    public float flashDuration = 0.1f;
+    public float flashDuration;
     public Material flashMaterial;
     private Material originalMaterial;
     private SpriteRenderer spriteRenderer;
 
     // Freeze Time 
+    [Header("Freeze Time Effect")]
     public bool activeFreezeTime = true;
-    public float freezeDuration = 0.05f;
+    public float freezeDuration;
 
     // Invulnerability
+    [Header("Invulnerability Effect")]
+    public bool activeInvulnerability = false; // Esta variable determina si el efecto de Invulnerability aplica a este game object
+    private bool isInvulnerable = false;       // Verifica si estamos o no vulnerables
+    public float timeInvulnerability;          // Tiempo de invulnerabilidad
+
 
     // Particles
-
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -42,7 +49,13 @@ public class DamageAble : MonoBehaviour
     // Aplicamos toods los efectos de Damage
     public void ApplyDamage(int damageAmount, Vector2 sourcePosition, float sourceKnockbackForce)
     {
-        //Efecto Knockback
+        //Efecto Invulnerable
+        if (isInvulnerable)
+        {
+            return;
+        }
+
+        // Efecto Knockback
         if (activeKnockback)
         {
             KnockBackApply(sourcePosition, sourceKnockbackForce);
@@ -54,9 +67,16 @@ public class DamageAble : MonoBehaviour
             StartCoroutine(FlashEffect());
         }
 
+        //Efecto Freeze Time
         if (activeFreezeTime)
         {
             StartCoroutine(FreezeTimeEffect());
+        }
+
+        //Efecto Invulnerabilidad
+        if (activeInvulnerability)
+        {
+            StartCoroutine(InvulnerabilityEffect());
         }
 
         healthHandler.TakeDamage(damageAmount);
@@ -104,5 +124,12 @@ public class DamageAble : MonoBehaviour
         Time.timeScale = 0;
         yield return new WaitForSecondsRealtime(freezeDuration);
         Time.timeScale = originalTime;
+    }
+
+    IEnumerator InvulnerabilityEffect()
+    {
+        isInvulnerable = true;
+        yield return new WaitForSeconds(timeInvulnerability);
+        isInvulnerable = false;
     }
 }

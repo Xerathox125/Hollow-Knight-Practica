@@ -82,7 +82,7 @@ public class PlayerAttacks : MonoBehaviour
         foreach (Collider2D enemy in hurtEnemies)
         {
             //Aplicamos el daño
-            DamageAble damageable = enemy.GetComponent<DamageAble>();
+            Damageable damageable = enemy.GetComponent<Damageable>();
             if (damageable != null)
             {
                 damageable.ApplyDamage(hitPower, transform.position, knockBackForce);
