@@ -10695,6 +10695,8 @@ MonoBehaviour:
   flashMaterial: {fileID: 2100000, guid: 6c36e9f841033d94f92cebb7c5fb37d2, type: 2}
   activeFreezeTime: 1
   freezeDuration: 0.03
+  activeInvulnerability: 0
+  timeInvulnerability: 1
 --- !u!1 &345702180
 GameObject:
   m_ObjectHideFlags: 0
