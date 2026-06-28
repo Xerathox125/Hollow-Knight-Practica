@@ -86,14 +86,7 @@ public class PlayerAttacks : MonoBehaviour
             if (damageable != null)
             {
                 damageable.ApplyDamage(hitPower, transform.position, knockBackForce);
-            }
-
-            /*
-            //Health Handler
-            HealthHandler healthEnemy = enemy.GetComponent<HealthHandler>();
-            if (healthEnemy != null)            
-                healthEnemy.TakeDamage(hitPower);
-            */
+            }          
             
             if (attackDirection == Vector2.down)            
                 Pogo();            

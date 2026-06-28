@@ -11,7 +11,7 @@ public class Damageable : MonoBehaviour
     //Knockback
     [Header("Knockback Effect")]
     public bool activeKnockback = true; // Esta variable determina si el efecto de knockback aplica a este game object
-    public float knockBackDuration; // Cuanto dura el efecto
+    public float knockBackDuration; // Cuanto dura el efecto de knockback
 
     // Flash
     [Header("Flash Effect")]
@@ -27,10 +27,9 @@ public class Damageable : MonoBehaviour
     public float freezeDuration;
 
     // Invulnerability
-    [Header("Invulnerability Effect")]
-    public bool activeInvulnerability = false; // Esta variable determina si el efecto de Invulnerability aplica a este game object
+    [Header("Invulnerability Effect")]    
     private bool isInvulnerable = false;       // Verifica si estamos o no vulnerables
-    public float timeInvulnerability;          // Tiempo de invulnerabilidad
+    public float timeInvulnerability;          // Tiempo de invulnerabilidad del personaje
 
 
     // Particles
@@ -46,7 +45,7 @@ public class Damageable : MonoBehaviour
         }
     }
 
-    // Aplicamos toods los efectos de Damage
+    // Aplicamos todos los efectos de Damage
     public void ApplyDamage(int damageAmount, Vector2 sourcePosition, float sourceKnockbackForce)
     {
         //Efecto Invulnerable
@@ -73,11 +72,8 @@ public class Damageable : MonoBehaviour
             StartCoroutine(FreezeTimeEffect());
         }
 
-        //Efecto Invulnerabilidad
-        if (activeInvulnerability)
-        {
-            StartCoroutine(InvulnerabilityEffect());
-        }
+        StartCoroutine(InvulnerabilityEffect());
+        
 
         healthHandler.TakeDamage(damageAmount);
         // Acceder a Health y quitar damageAmount
