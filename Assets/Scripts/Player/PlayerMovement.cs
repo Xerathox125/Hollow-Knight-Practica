@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2 move = playerController.moveInput; // Obtiene input del controlador
         bool pressInputX = Mathf.Abs(move.x) > 0.5f;
-        float currentSpeed = playerController.crouch.isCrouching ? playerController.crouchSpeed : playerController.currentSpeed; // Elige velocidad según estado (agachado vs normal)
+        float currentSpeed = playerController.crouch.isCrouching && playerController.jump.IsGrounded ? playerController.crouchSpeed : playerController.currentSpeed; // Elige velocidad según estado (agachado vs normal)
 
         if (onKnockBack) return; // Si ocurre knockback, return
 
