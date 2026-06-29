@@ -11,12 +11,12 @@ public class Damageable : MonoBehaviour
     //Knockback
     [Header("Knockback Effect")]
     public bool activeKnockback = true; // Esta variable determina si el efecto de knockback aplica a este game object
-    public float knockBackDuration; // Cuanto dura el efecto de knockback
+    public float knockBackDuration = 0.25f; // Cuanto dura el efecto de knockback
 
     // Flash
     [Header("Flash Effect")]
     public bool activeFlash = true; // Esta variable determina si el efecto de Flash aplica a este game object
-    public float flashDuration;
+    public float flashDuration = 0.1f;
     public Material flashMaterial;
     private Material originalMaterial;
     private SpriteRenderer spriteRenderer;
@@ -24,12 +24,12 @@ public class Damageable : MonoBehaviour
     // Freeze Time 
     [Header("Freeze Time Effect")]
     public bool activeFreezeTime = true;
-    public float freezeDuration;
+    public float freezeDuration = 0.1f;
 
     // Invulnerability
     [Header("Invulnerability Effect")]    
     private bool isInvulnerable = false;       // Verifica si estamos o no vulnerables
-    public float timeInvulnerability;          // Tiempo de invulnerabilidad del personaje
+    public float timeInvulnerability = 1.3f;   // Tiempo de invulnerabilidad del personaje
 
 
     // Particles
