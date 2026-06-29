@@ -65,6 +65,7 @@ public class PlayerController : MonoBehaviour
         stairs.OnUpdate();
         swim.OnUpdate();        
         wallJump.OnUpdate();
+        attacks.OnUpdate();
     }
 
     private void FixedUpdate()
@@ -75,8 +76,6 @@ public class PlayerController : MonoBehaviour
         movement.Move();
         dash.OnFixedUpdate();
         stairs.OnFixedUpdate();
-        attacks.OnUpdate();
-
     }
 
     private void OnEnable()

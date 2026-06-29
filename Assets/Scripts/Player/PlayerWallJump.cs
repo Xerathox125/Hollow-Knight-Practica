@@ -6,7 +6,6 @@ public class PlayerWallJump : MonoBehaviour
     PlayerController playerController;
 
     [Header("Wall Jump")]
-    //Variables para crear el raycast
     public float rayCheckDistance;                     // Distancia del raycast para detectar paredes
     public LayerMask wallLayer;                        // Identifica que el layer será considerado una pared
     private float graceTimer = 0;                      // Asegúrate de tener esta variable definida en la clase
@@ -24,14 +23,16 @@ public class PlayerWallJump : MonoBehaviour
     //Variables cooldown para saltar entre paredes
     public float wallJumpCoolDown;                     // Tiempo durante el cual no puede volver a sostenerse del muro después de hacer un salto
     private float coolDownWallTimer = 0;               // Contador para disminuir el cooldown
-    private bool canAttach = true;                     // Cuando esté en true significa que terminó el cooldown
+    private bool canAttach = true;                     // Cuando está en true significa que terminó el cooldown
 
-    //Variables para saltar correctamente de pared en otra, congelando inputs por milésimas de segundo
-    public float unStickCooldown;                      // Tiempo espera para volver a sostenerse en un muro luego de dejarnos caer cuando estábamos sostenidos
+    //Variables para saltar correctamente de pared en otra
+    public float unStickCooldown;                      // Tiempo espera para volver a sostenerse en un muro luego de dejarnos caer
 
     private bool isWall;                               // Si estamos sostenidos en un muro
     private bool isWallJump;                           // Si estamos saltando de un muro
 
+    // Dirección real de la pared, independiente del sprite
+    private bool wallIsOnRight;
 
     //Getters & Setters
     public bool IsWall => isWall;
@@ -41,19 +42,18 @@ public class PlayerWallJump : MonoBehaviour
     private void Awake()
     {
         playerController = GetComponent<PlayerController>();
-    }   
+    }
 
     public void OnUpdate()
     {
-
         if (isWallJumpActive)
         {
             wallJumpTimer -= Time.deltaTime;
-            if (wallJumpTimer <= 0)            
-                isWallJumpActive = false; // Recuperamos el control            
+            if (wallJumpTimer <= 0)
+                isWallJumpActive = false;
         }
 
-        //Verificar que el player no está nadando
+        //Verificar que el player no esté nadando
         if (playerController.swim != null && playerController.swim.IsSwim)
         {
             isWall = false;
@@ -80,41 +80,63 @@ public class PlayerWallJump : MonoBehaviour
         }
     }
 
-    public void DetectWallJump() // Método para saber si estamos detectando una pared
+    public void DetectWallJump()
     {
-        if (!canAttach) //Si no podemos attacharnos a la pared, entonces no detectamos la pared
+        if (!canAttach)
         {
             isWall = false;
             return;
         }
 
-        if (playerController.jump.IsGrounded && playerController.jump != null) // Si estmamos en el suelo, no detectamos la pared
+        if (playerController.jump.IsGrounded && playerController.jump != null)
         {
             isWall = false;
             return;
         }
 
-        //Creacion del raycast que sale frente al jugador para detectar muros
+        // Durante un ataque de pared, el sprite está volteado pero la pared sigue en el mismo lado.
+        // Usamos wallIsOnRight (guardado cuando se detectó la pared) para el raycast.
+        bool isWallAttacking = playerController.attacks != null
+                               && playerController.attacks.IsAttack
+                               && playerController.attacks.WasOnWallAttack;
+
         Vector2 direction;
-        direction = playerController.movement.IsFacingRight ? Vector2.right : Vector2.left; //Ver hacia donde apunta el jugador cuando detecta un raycast
+        if (isWallAttacking)
+            // La pared está al lado opuesto de donde ahora mira el sprite
+            direction = playerController.movement.IsFacingRight ? Vector2.left : Vector2.right;
+        else
+            direction = playerController.movement.IsFacingRight ? Vector2.right : Vector2.left;
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, rayCheckDistance, wallLayer);
 
-        //Verificamos si estamos en pared
-        isWall = (hit.collider != null) ? true : false;       
+        if (hit.collider != null)
+        {
+            isWall = true;
+            wallIsOnRight = direction == Vector2.right; // Guarda en qué lado está la pared real
+        }
+        else
+        {
+            isWall = false;
+        }
     }
 
     public void UpdateWallJump()
     {
         if (isWall && !playerController.jump.IsGrounded)
         {
-            // 1. Obtenemos el input actual
             Vector2 input = playerController.controles.Player.Move.ReadValue<Vector2>();
 
-            // 2. Determinamos si el jugador está presionando hacia el muro
-            bool isPressingWall = playerController.movement.IsFacingRight ? (input.x > 0.1f) : (input.x < -0.1f);
+            // Durante ataque de pared usamos la dirección real de la pared, no IsFacingRight
+            bool isWallAttacking = playerController.attacks != null
+                                   && playerController.attacks.IsAttack
+                                   && playerController.attacks.WasOnWallAttack;
 
-            // 3. Lógica de despegue y ventana de salto
+            bool isPressingWall;
+            if (isWallAttacking)
+                isPressingWall = wallIsOnRight ? (input.x > 0.1f) : (input.x < -0.1f);
+            else
+                isPressingWall = playerController.movement.IsFacingRight ? (input.x > 0.1f) : (input.x < -0.1f);
+
             if (!isPressingWall)
             {
                 graceTimer += Time.deltaTime;
@@ -125,17 +147,15 @@ public class PlayerWallJump : MonoBehaviour
                     canAttach = false;
                     coolDownWallTimer = unStickCooldown;
                     graceTimer = 0;
-                    return; // Salimos: al no retornar, aplicaría slideWallSpeed, aquí se corta
+                    return;
                 }
             }
             else
-                graceTimer = 0; // Reseteamos si vuelve a presionar hacia el muro
+                graceTimer = 0;
 
-            // 4. Aplicamos deslizamiento SOLO si estamos presionando hacia el muro (Esto evita que se quede "pegado" flotando si suelta la tecla)
             if (isPressingWall && !isWallJump && playerController.rb.linearVelocity.y < slideWallSpeed)
                 playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, slideWallSpeed);
 
-            // 5. Salto desde el muro
             if (playerController.controles.Player.Jump.triggered) WallJump();
         }
         else graceTimer = 0;
@@ -143,17 +163,15 @@ public class PlayerWallJump : MonoBehaviour
 
     public void WallJump()
     {
-        isWallJumpActive = true; // Iniciamos el estado de bloqueo
+        isWallJumpActive = true;
         wallJumpTimer = wallJumpDuration;
         isWallJump = true;
         coolDownWallTimer = wallJumpCoolDown;
         canAttach = true;
 
-        // Aplicar fuerzas o velocidades en X y Y para el impulso del jugador cuando salta desde el muro
         Vector2 dirX = playerController.movement.IsFacingRight ? Vector2.left : Vector2.right;
         playerController.rb.linearVelocity = new Vector2(dirX.x * wallJumpForceX, wallJumpForceY);
 
-        // Llamar a SetFacing desde PlayerMovement
         playerController.movement.SetFacing(dirX.x > 0f);
         isWall = false;
     }

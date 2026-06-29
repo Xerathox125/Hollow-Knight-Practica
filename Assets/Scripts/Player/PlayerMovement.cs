@@ -33,28 +33,32 @@ public class PlayerMovement : MonoBehaviour
 
         if (playerController.wallJump != null && playerController.wallJump.isWallJumpActive) return; // Si estamos haciendo haciendo WallJump, impedimos el movimiento horizontal y salimos de la función sin aplicar el velocity.x del input
 
-        if (playerController.wallJump != null && playerController.wallJump.IsWallJump) return; // Si estamoos en muro y no hemoe caído o saltado, bloquear movimiento
+        if (playerController.wallJump != null && playerController.wallJump.IsWallJump) return; // Si estamos en muro y no hemos caído o saltado, bloquear movimiento
 
-        playerController.currentSpeed = playerController.swim.IsSwim ? playerController.swim.speedSwim : moveSpeed; // Ajusta la velocidad si está nadando, si está nadando le aplicamos la velocidad de nado, sino la velocidad normal
+        playerController.currentSpeed = playerController.swim.IsSwim ? playerController.swim.speedSwim : moveSpeed; // Ajusta la velocidad si está nadando
 
         if (playerController.dash?.isDash == true) return; // Cancela movimiento si está haciendo dash
-            
+
         if (playerController.wallJump != null && playerController.wallJump.IsWall) // Si estamos en un muro pero no hemos saltado, bloqueamos movimiento del jugador
         {
             float inputX = playerController.moveInput.x;
             bool isPressingTowardsWall = isFacingRight ? (inputX > 0.1f) : (inputX < -0.1f); // Si el jugador intenta moverse en dirección opuesta a la pared, anulamos el input X
-            if (!isPressingTowardsWall) move.x = 0;            
+            if (!isPressingTowardsWall) move.x = 0;
         }
 
-        if (pressInputX || (playerController.jump != null && playerController.jump.IsGrounded)) //Si estamos oprimiendo el input X y estamos en el suelo
-            playerController.rb.linearVelocity = new Vector2(move.x * currentSpeed, playerController.rb.linearVelocity.y); // Aplica velocidad en X al rigidbody del PlayerController
-        
-        if (pressInputX)
+        if (pressInputX || (playerController.jump != null && playerController.jump.IsGrounded))
+            playerController.rb.linearVelocity = new Vector2(move.x * currentSpeed, playerController.rb.linearVelocity.y);
+
+        // Bloquear Flip si está atacando desde la pared para no interferir con el sprite volteado
+        bool isWallAttacking = playerController.attacks != null
+                               && playerController.attacks.IsAttack
+                               && playerController.attacks.WasOnWallAttack;
+
+        if (pressInputX && !isWallAttacking)
         {
             if (move.x > 0 && !isFacingRight) Flip(); // Voltea sprite a la derecha
             else if (move.x < 0 && isFacingRight) Flip(); // Voltea sprite a la izquierda
         }
-
     }
 
     private void Flip() // Cambia la escala para voltear al jugador
@@ -65,6 +69,6 @@ public class PlayerMovement : MonoBehaviour
 
     public void SetFacing(bool right)
     {
-        if (isFacingRight != right) Flip();        
+        if (isFacingRight != right) Flip();
     }
 }

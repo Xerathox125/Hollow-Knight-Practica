@@ -17,11 +17,13 @@ public class PlayerAttacks : MonoBehaviour
     private float timerAttackCoolDown = 0f;
     private bool isAttack;
     private Vector2 attackDirection;
+    private bool wasOnWallAttack; // Flag para saber si atacó desde la pared
 
     // Getters
     public bool IsAttack => isAttack;
     public Vector2 AttackDirection => attackDirection;
-       
+    public bool WasOnWallAttack => wasOnWallAttack; // Expuesto para que otros scripts lo lean
+
 
     private void Start()
     {
@@ -39,19 +41,18 @@ public class PlayerAttacks : MonoBehaviour
     //Este metodo se llama al apretar la tecla de attack del input
     public void AttackHold()
     {
-        if (isAttack || timerAttackCoolDown > 0)
-        {
-            return;
-        }
+        if (isAttack || timerAttackCoolDown > 0) return;
 
         timerAttackCoolDown = attackCoolDown;
         isAttack = true;
 
-        // Calcular el input del jugador
         Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>();
 
-        // Calcular la dirección del ataque
-        // Ataque hacia abajo
+        // Verifica si el jugador está sostenido en una pared (Megaman/Hollow Knight style)
+        bool isOnWall = playerController.wallJump != null
+                        && playerController.wallJump.IsWall
+                        && !playerController.jump.IsGrounded;
+
         if (move.y < -0.2f && !playerController.jump.IsGrounded)
         {
             attackDirection = Vector2.down;
@@ -62,13 +63,17 @@ public class PlayerAttacks : MonoBehaviour
         }
         else
         {
-            if (playerController.movement.IsFacingRight)
+            // En pared: ataca hacia afuera (opuesto al sprite), como Megaman/Hollow Knight
+            // Sin pared: ataca hacia donde mira
+            bool facingRight = playerController.movement.IsFacingRight;
+            bool attackRight = isOnWall ? !facingRight : facingRight;
+            attackDirection = attackRight ? Vector2.right : Vector2.left;
+
+            // Si está en pared, voltea el sprite hacia donde ataca
+            if (isOnWall)
             {
-                attackDirection = Vector2.right;
-            }
-            else
-            {
-                attackDirection = Vector2.left;
+                wasOnWallAttack = true;
+                playerController.movement.SetFacing(attackRight);
             }
         }
     }
@@ -86,10 +91,10 @@ public class PlayerAttacks : MonoBehaviour
             if (damageable != null)
             {
                 damageable.ApplyDamage(hitPower, transform.position, knockBackForce);
-            }          
-            
-            if (attackDirection == Vector2.down)            
-                Pogo();            
+            }
+
+            if (attackDirection == Vector2.down)
+                Pogo();
         }
     }
 
@@ -98,12 +103,19 @@ public class PlayerAttacks : MonoBehaviour
         //Cancelamos las fuerzas y velocidades del RigidBody del player
         playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, 0f);
         //Aplicamos un impulso hacia arriba a nuestro jugador
-        playerController.rb.AddForce(Vector2.up * pogoForce,ForceMode2D.Impulse);
+        playerController.rb.AddForce(Vector2.up * pogoForce, ForceMode2D.Impulse);
     }
 
     public void EndAttack()
     {
         isAttack = false;
+
+        // Restaura la dirección del sprite si atacó desde la pared
+        if (wasOnWallAttack)
+        {
+            playerController.movement.SetFacing(!playerController.movement.IsFacingRight);
+            wasOnWallAttack = false;
+        }
     }
 
     private void OnDrawGizmos()
@@ -112,6 +124,4 @@ public class PlayerAttacks : MonoBehaviour
         Vector2 gizmosPos = (Vector2)transform.position + attackDirection * attackRange + Vector2.Scale(hitBoxOffset, attackDirection);
         Gizmos.DrawWireSphere(gizmosPos, attackRange);
     }
-
-
 }
