@@ -69,6 +69,11 @@ public class UpdateAnimsPlayer : MonoBehaviour
         // WallJump
         if (playerController.wallJump.IsWall && !playerController.jump.IsGrounded)
         {
+            // Si veníamos de un ataque en pared, restauramos el scale aquí
+            // para sincronizarlo exactamente con el cambio a WallIdle
+            if (playerController.attacks.WasOnWallAttack)
+                playerController.attacks.RestoreWallAttackScale();
+
             TrySetAnim(AnimState.WallIdle, new IdleHandWallPlayerStateAnim(playerController.animPlayer));
             return;
         }

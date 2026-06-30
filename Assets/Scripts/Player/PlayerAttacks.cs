@@ -98,10 +98,14 @@ public class PlayerAttacks : MonoBehaviour
     public void EndAttack()
     {
         isAttack = false;
+        // El scale se restaura desde UpdateAnimsPlayer cuando corresponde,
+        // para sincronizarlo con el cambio de animación y evitar el parpadeo de un frame
+    }
 
+    public void RestoreWallAttackScale()
+    {
         if (wasOnWallAttack)
         {
-            // Restaura localScale al estado original (inverso de lo que hicimos)
             Vector3 s = transform.localScale;
             transform.localScale = new Vector3(-s.x, s.y, s.z);
             wasOnWallAttack = false;
