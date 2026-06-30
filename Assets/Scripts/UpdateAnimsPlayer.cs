@@ -5,8 +5,7 @@ public class UpdateAnimsPlayer : MonoBehaviour
     private AnimationManager animationManager;
     private PlayerController playerController;
 
-    // Se añaden SwimIdle y SwimMove para proteger el estado de nado
-    private enum AnimState { None, Idle, Run, JumpStart, JumpEnd, CrouchIdle, CrouchRun, Dash, StairsIdle, StairsMove, SwimIdle, SwimMove, WallIdle }
+    private enum AnimState { None, Idle, Run, JumpStart, JumpEnd, CrouchIdle, CrouchRun, Dash, StairsIdle, StairsMove, SwimIdle, SwimMove, WallIdle, AttackUp, AttackDown, AttackSide }
     private AnimState currentAnim = AnimState.None;
 
     private void Awake()
@@ -15,7 +14,6 @@ public class UpdateAnimsPlayer : MonoBehaviour
         playerController = GetComponent<PlayerController>();
     }
 
-    // Función auxiliar para centralizar la validación y evitar el frame-spam
     private void TrySetAnim(AnimState newState, StatesAnimsAbstract animClass)
     {
         if (currentAnim != newState)
@@ -29,22 +27,16 @@ public class UpdateAnimsPlayer : MonoBehaviour
     {
         Vector2 move = playerController.controles.Player.Move.ReadValue<Vector2>();
 
-        // Ataque
+        // Ataque — TrySetAnim para no reiniciar la animación cada frame
         if (playerController.attacks.IsAttack)
         {
-            if (playerController.attacks.AttackDirection == Vector2.up) //Si ataca hacia arriba
-            {
-                animationManager.SetState(new AttackUpPlayerStateAnim(playerController.animPlayer));
-            }
-            else if (playerController.attacks.AttackDirection == Vector2.down) //Si ataca hacia abajo
-            {
-                animationManager.SetState(new AttackDownPlayerStateAnim(playerController.animPlayer));
-            }
-            else //Si ataca a los lados
-            {
-                animationManager.SetState(new AttackSidePlayerStateAnim(playerController.animPlayer));
-            }
-            return; //Evitar otras animaciones
+            if (playerController.attacks.AttackDirection == Vector2.up)
+                TrySetAnim(AnimState.AttackUp, new AttackUpPlayerStateAnim(playerController.animPlayer));
+            else if (playerController.attacks.AttackDirection == Vector2.down)
+                TrySetAnim(AnimState.AttackDown, new AttackDownPlayerStateAnim(playerController.animPlayer));
+            else
+                TrySetAnim(AnimState.AttackSide, new AttackSidePlayerStateAnim(playerController.animPlayer));
+            return;
         }
 
         // Dash

@@ -10,61 +10,54 @@ public class PlayerMovement : MonoBehaviour
     private bool isMoving;             // Estado de movimiento
     [HideInInspector] public bool onKnockBack;
 
-
     //Getters y Setters
-    public bool IsMoving => isMoving;  // Propiedad pública para acceder al estado
+    public bool IsMoving => isMoving;
     public bool IsFacingRight => isFacingRight;
 
+    private void Awake() => playerController = GetComponent<PlayerController>();
 
-    private void Awake() => playerController = GetComponent<PlayerController>(); // Cache del controlador
-
-    public void OnUpdate() // Actualiza lógica de movimiento
+    public void OnUpdate()
     {
-        isMoving = playerController.moveInput.x != 0; // Verifica si hay input horizontal
+        isMoving = playerController.moveInput.x != 0;
     }
 
-    public void Move() // Aplica la física de movimiento
+    public void Move()
     {
-        Vector2 move = playerController.moveInput; // Obtiene input del controlador
+        Vector2 move = playerController.moveInput;
         bool pressInputX = Mathf.Abs(move.x) > 0.5f;
-        float currentSpeed = playerController.crouch.isCrouching && playerController.jump.IsGrounded ? playerController.crouchSpeed : playerController.currentSpeed; // Elige velocidad según estado (agachado vs normal)
+        float currentSpeed = playerController.crouch.isCrouching && playerController.jump.IsGrounded
+            ? playerController.crouchSpeed
+            : playerController.currentSpeed;
 
-        if (onKnockBack) return; // Si ocurre knockback, return
+        if (onKnockBack) return;
+        if (playerController.wallJump != null && playerController.wallJump.isWallJumpActive) return;
+        if (playerController.wallJump != null && playerController.wallJump.IsWallJump) return;
 
-        if (playerController.wallJump != null && playerController.wallJump.isWallJumpActive) return; // Si estamos haciendo haciendo WallJump, impedimos el movimiento horizontal y salimos de la función sin aplicar el velocity.x del input
+        playerController.currentSpeed = playerController.swim.IsSwim ? playerController.swim.speedSwim : moveSpeed;
 
-        if (playerController.wallJump != null && playerController.wallJump.IsWallJump) return; // Si estamos en muro y no hemos caído o saltado, bloquear movimiento
+        if (playerController.dash?.isDash == true) return;
 
-        playerController.currentSpeed = playerController.swim.IsSwim ? playerController.swim.speedSwim : moveSpeed; // Ajusta la velocidad si está nadando
-
-        if (playerController.dash?.isDash == true) return; // Cancela movimiento si está haciendo dash
-
-        if (playerController.wallJump != null && playerController.wallJump.IsWall) // Si estamos en un muro pero no hemos saltado, bloqueamos movimiento del jugador
+        if (playerController.wallJump != null && playerController.wallJump.IsWall)
         {
             float inputX = playerController.moveInput.x;
-            bool isPressingTowardsWall = isFacingRight ? (inputX > 0.1f) : (inputX < -0.1f); // Si el jugador intenta moverse en dirección opuesta a la pared, anulamos el input X
+            bool isPressingTowardsWall = isFacingRight ? (inputX > 0.1f) : (inputX < -0.1f);
             if (!isPressingTowardsWall) move.x = 0;
         }
 
         if (pressInputX || (playerController.jump != null && playerController.jump.IsGrounded))
             playerController.rb.linearVelocity = new Vector2(move.x * currentSpeed, playerController.rb.linearVelocity.y);
 
-        // Bloquear Flip si está atacando desde la pared para no interferir con el sprite volteado
-        bool isWallAttacking = playerController.attacks != null
-                               && playerController.attacks.IsAttack
-                               && playerController.attacks.WasOnWallAttack;
-
-        if (pressInputX && !isWallAttacking)
+        if (pressInputX)
         {
-            if (move.x > 0 && !isFacingRight) Flip(); // Voltea sprite a la derecha
-            else if (move.x < 0 && isFacingRight) Flip(); // Voltea sprite a la izquierda
+            if (move.x > 0 && !isFacingRight) Flip();
+            else if (move.x < 0 && isFacingRight) Flip();
         }
     }
 
-    private void Flip() // Cambia la escala para voltear al jugador
+    private void Flip()
     {
-        isFacingRight = !isFacingRight; // Invierte el estado lógico
-        transform.localScale = new Vector3(isFacingRight ? 1f : -1f, 1f, 1f); // Aplica cambio visual en el transform
+        isFacingRight = !isFacingRight;
+        transform.localScale = new Vector3(isFacingRight ? 1f : -1f, 1f, 1f);
     }
 
     public void SetFacing(bool right)
