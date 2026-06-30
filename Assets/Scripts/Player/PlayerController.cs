@@ -53,7 +53,6 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         moveInput = controles.Player.Move.ReadValue<Vector2>();
-
         movement.OnUpdate();
         crouch.OnUpdate();
         dash.OnUpdate();
@@ -61,9 +60,7 @@ public class PlayerController : MonoBehaviour
         swim.OnUpdate();
         wallJump.OnUpdate();
         attacks.OnUpdate();
-
         updateAnimsPlayer.UpdateAnimation();
-
     }
 
     private void FixedUpdate()

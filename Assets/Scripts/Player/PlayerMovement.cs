@@ -57,7 +57,7 @@ public class PlayerMovement : MonoBehaviour
     private void Flip()
     {
         isFacingRight = !isFacingRight;
-        transform.localScale = new Vector3(isFacingRight ? 1f : -1f, 1f, 1f);
+        transform.localScale = new Vector2(isFacingRight ? 1f : -1f, 1f);
     }
 
     public void SetFacing(bool right)

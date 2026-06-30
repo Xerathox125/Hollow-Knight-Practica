@@ -67,8 +67,8 @@ public class PlayerAttacks : MonoBehaviour
                 wasOnWallAttack = true;
                 // Voltea localScale visualmente sin cambiar IsFacingRight
                 // para no romper la lógica de detección de pared
-                Vector3 s = transform.localScale;
-                transform.localScale = new Vector3(-s.x, s.y, s.z);
+                Vector2 sprite = transform.localScale;
+                transform.localScale = new Vector2(-sprite.x, sprite.y);
             }
         }
     }
@@ -106,8 +106,8 @@ public class PlayerAttacks : MonoBehaviour
     {
         if (wasOnWallAttack)
         {
-            Vector3 s = transform.localScale;
-            transform.localScale = new Vector3(-s.x, s.y, s.z);
+            Vector2 sprite = transform.localScale;
+            transform.localScale = new Vector2(-sprite.x, sprite.y);
             wasOnWallAttack = false;
         }
     }
