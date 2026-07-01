@@ -19,6 +19,10 @@ public class HealthHandler : MonoBehaviour
 
     private void Die()
     {
+        if(Time.timeScale == 0)
+        {
+            Time.timeScale = 1;
+        }
         //Activamos partículas
         //generamos sonido
 

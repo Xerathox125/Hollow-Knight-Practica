@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -54,10 +55,23 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // Aplica el knockback desde el propio jugador, sin depender de corrutinas del enemigo
+    public void ApplyKnockBack(float duration)
+    {
+        StartCoroutine(KnockBackTimer(duration));
+    }
+
+    private IEnumerator KnockBackTimer(float duration)
+    {
+        onKnockBack = true;
+        yield return new WaitForSeconds(duration);
+        onKnockBack = false;
+    }
+
     private void Flip()
     {
         isFacingRight = !isFacingRight;
-        transform.localScale = new Vector2(isFacingRight ? 1f : -1f, 1f);
+        transform.localScale = new Vector3(isFacingRight ? 1f : -1f, 1f, 1f);
     }
 
     public void SetFacing(bool right)

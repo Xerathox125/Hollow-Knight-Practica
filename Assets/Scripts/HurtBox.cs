@@ -4,12 +4,12 @@ using UnityEngine;
 public class HurtBox : MonoBehaviour
 {
     [Header("HurtBox")]
-    public int damageEnemy; // Cantidad de daño del hurtbox en cada golpe
-    public float knockBackForce; // Fuerza de retroceso que aplica el enemigo al personaje
-    public float timeKnockBack; // Tiempo que dura el knockback
-    public Vector2 hurtBoxSize; // Tamaño del HurtBox
-    public Vector2 hurtBoxOffSet; // Posición del HurtBox
-    public LayerMask targetLayer; // Layer de los gameObjects afectados por el hurtbox
+    public int damageEnemy;
+    public float knockBackForce;
+    public float timeKnockBack;
+    public Vector2 hurtBoxSize;
+    public Vector2 hurtBoxOffSet;
+    public LayerMask targetLayer;
 
     // CoolDown
     public float damageCoolDown;
@@ -31,16 +31,12 @@ public class HurtBox : MonoBehaviour
         Vector2 center = (Vector2)transform.position + hurtBoxOffSet;
         Collider2D[] hits = Physics2D.OverlapBoxAll(center, hurtBoxSize, 0f, targetLayer);
 
-
         foreach (Collider2D hit in hits)
         {
             Damageable damage = hit.GetComponent<Damageable>();
             if (damage != null)
             {
-                //Punto de contacto entre el hurtbox y el collider del hit
                 Vector2 contactPoint = hit.ClosestPoint(center);
-
-                //Si el centro del hurtbox es muy cercano a el contact point, entonces forzamos dirección desde el center point
                 if ((contactPoint - center).sqrMagnitude > 0.0001f)
                 {
                     contactPoint = center;
@@ -48,25 +44,16 @@ public class HurtBox : MonoBehaviour
                 damage.ApplyDamage(damageEnemy, contactPoint, knockBackForce);
             }
 
-            //En caso de que el hitbox detectado sea el player movement
+            // El knockback del jugador se maneja desde el propio PlayerMovement
+            // para que la corrutina no dependa de que el enemigo siga vivo
             PlayerMovement playerMovement = hit.GetComponent<PlayerMovement>();
-            if (playerMovement != null) 
+            if (playerMovement != null)
             {
-                playerMovement.onKnockBack = true;
-                //Llamar a la corrutina
-                StartCoroutine(ResetKnockBack(playerMovement, timeKnockBack));
+                playerMovement.ApplyKnockBack(timeKnockBack);
             }
+
             coolDownTimer = damageCoolDown;
         }
-    }
-
-    IEnumerator ResetKnockBack(PlayerMovement playerMovement, float timeKnockBack)
-    {
-        yield return new WaitForSeconds(timeKnockBack);
-        if (playerMovement != null) 
-        {
-            playerMovement.onKnockBack = false;
-        }         
     }
 
     private void OnDrawGizmos()
@@ -75,5 +62,4 @@ public class HurtBox : MonoBehaviour
         Vector2 center = (Vector2)transform.position + hurtBoxOffSet;
         Gizmos.DrawWireCube(center, hurtBoxSize);
     }
-
 }

@@ -116,10 +116,20 @@ public class Damageable : MonoBehaviour
 
     IEnumerator FreezeTimeEffect()
     {
+        if(Time.timeScale == 0)
+        {
+            yield break;
+        }
+
         float originalTime = Time.timeScale;
         Time.timeScale = 0;
         yield return new WaitForSecondsRealtime(freezeDuration);
-        Time.timeScale = originalTime;
+
+        if (Time.timeScale == 0)
+        {
+            Time.timeScale = originalTime;
+        }
+
     }
 
     IEnumerator InvulnerabilityEffect()
