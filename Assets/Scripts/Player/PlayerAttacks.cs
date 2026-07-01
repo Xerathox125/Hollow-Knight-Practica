@@ -81,25 +81,20 @@ public class PlayerAttacks : MonoBehaviour
         foreach (Collider2D enemy in hurtEnemies)
         {
             Damageable damageable = enemy.GetComponent<Damageable>();
-            if (damageable != null)
-                damageable.ApplyDamage(hitPower, transform.position, knockBackForce);
-
-            if (attackDirection == Vector2.down)
-                Pogo();
+            if (damageable != null) damageable.ApplyDamage(hitPower, transform.position, knockBackForce);
+            if (attackDirection == Vector2.down) Pogo();
         }
     }
 
     public void Pogo()
     {
-        playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, 0f);
+        playerController.rb.linearVelocity = Vector2.zero; // Detiene movimiento residual
         playerController.rb.AddForce(Vector2.up * pogoForce, ForceMode2D.Impulse);
     }
 
     public void EndAttack()
     {
         isAttack = false;
-        // El scale se restaura desde UpdateAnimsPlayer cuando corresponde,
-        // para sincronizarlo con el cambio de animación y evitar el parpadeo de un frame
     }
 
     public void RestoreWallAttackScale()
