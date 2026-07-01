@@ -119,9 +119,15 @@ public class PlayerJump : MonoBehaviour
 
     public void JumpRelease() // Acción al soltar botón de salto
     {
+        if (playerController.swim != null && playerController.swim.IsSwim) return; // En agua el salto es de fuerza fija, JumpRelease no debe interferir
+
+
         if (playerController.rb.linearVelocity.y > 0) // Si está subiendo
         {
-            playerController.rb.linearVelocity = new Vector2(playerController.rb.linearVelocity.x, playerController.rb.linearVelocity.y * jumpRelease); // Reduce velocidad vertical bruscamente
+            playerController.rb.linearVelocity = new Vector2(
+                playerController.rb.linearVelocity.x,
+                playerController.rb.linearVelocity.y * jumpRelease
+            ); // Reduce velocidad vertical bruscamente
         }
         playerController.rb.gravityScale = playerController.fallGravity; // Aplica gravedad de caída
         hasJumped = true; // Marca salto como ejecutado
