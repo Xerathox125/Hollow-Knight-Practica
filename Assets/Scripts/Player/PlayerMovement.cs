@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Move")]
     public float moveSpeed;            // Velocidad base de movimiento
-    private bool isFacingRight = true; // Dirección actual del sprite
+    private bool isFacingRight = true; // Direcci?n actual del sprite
     private bool isMoving;             // Estado de movimiento
     [HideInInspector] public bool onKnockBack;
 
@@ -45,8 +45,16 @@ public class PlayerMovement : MonoBehaviour
             if (!isPressingTowardsWall) move.x = 0;
         }
 
+        // Si hay input horizontal, aplicar velocidad (tanto en suelo como en aire para control aéreo)
+        // Si NO hay input horizontal, detener movimiento horizontal (caer en línea recta)
         if (pressInputX || (playerController.jump != null && playerController.jump.IsGrounded))
+        {
             playerController.rb.linearVelocity = new Vector2(move.x * currentSpeed, playerController.rb.linearVelocity.y);
+        }
+        else
+        {
+            playerController.rb.linearVelocity = new Vector2(0, playerController.rb.linearVelocity.y);
+        }
 
         if (pressInputX)
         {
