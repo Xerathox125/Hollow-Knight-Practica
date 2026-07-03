@@ -9070,11 +9070,21 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
+  - first: {x: -76, y: 35, z: 0}
+    second:
+      serializedVersion: 2
+      m_TileIndex: 1
+      m_TileSpriteIndex: 1
+      m_TileMatrixIndex: 0
+      m_TileColorIndex: 0
+      m_TileObjectToInstantiateIndex: 65535
+      dummyAlignment: 0
+      m_AllTileFlags: 1073741825
   m_AnimatedTiles: {}
   m_TileAssetArray:
   - m_RefCount: 1
     m_Data: {fileID: 11400000, guid: 07b8f30ecc3417b47b5320fc7801e8c7, type: 2}
-  - m_RefCount: 93
+  - m_RefCount: 94
     m_Data: {fileID: 11400000, guid: ee28bc2d46e9e2145b0feaa08562db33, type: 2}
   - m_RefCount: 19
     m_Data: {fileID: 11400000, guid: 1674349361578af469968846af039a0f, type: 2}
@@ -9095,7 +9105,7 @@ Tilemap:
   m_TileSpriteArray:
   - m_RefCount: 1
     m_Data: {fileID: 8458814960144615047, guid: aff2e1025b3883346993693f07b2c3c5, type: 3}
-  - m_RefCount: 93
+  - m_RefCount: 94
     m_Data: {fileID: -1137903264212578849, guid: aff2e1025b3883346993693f07b2c3c5, type: 3}
   - m_RefCount: 19
     m_Data: {fileID: -5830933179451950236, guid: aff2e1025b3883346993693f07b2c3c5, type: 3}
@@ -9114,7 +9124,7 @@ Tilemap:
   - m_RefCount: 1
     m_Data: {fileID: -7071941028651967790, guid: aff2e1025b3883346993693f07b2c3c5, type: 3}
   m_TileMatrixArray:
-  - m_RefCount: 885
+  - m_RefCount: 886
     m_Data:
       e00: 1
       e01: 0
@@ -9133,13 +9143,13 @@ Tilemap:
       e32: 0
       e33: 1
   m_TileColorArray:
-  - m_RefCount: 885
+  - m_RefCount: 886
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Origin: {x: -38, y: -8, z: 0}
-  m_Size: {x: 119, y: 30, z: 1}
+  m_Origin: {x: -76, y: -8, z: 0}
+  m_Size: {x: 157, y: 44, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:
@@ -9200,6 +9210,14 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 99924037}
     m_ColliderPaths:
+    - - X: -750000000
+        Y: 360000000
+      - X: -760000000
+        Y: 360000000
+      - X: -760000000
+        Y: 350000000
+      - X: -750000000
+        Y: 350000000
     - - X: 760000000
         Y: 180000000
       - X: -260000000
@@ -12080,6 +12098,10 @@ CompositeCollider2D:
         Y: -50000000
   m_CompositePaths:
     m_Paths:
+    - - {x: -75.00003, y: 35}
+      - {x: -75.00003, y: 36}
+      - {x: -76, y: 35.999973}
+      - {x: -75.99997, y: 35}
     - - {x: 75.99997, y: -8}
       - {x: 75.99997, y: 18}
       - {x: -26, y: 17.999971}
@@ -13790,7 +13812,7 @@ Transform:
   m_GameObject: {fileID: 317752387}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -68.42, y: 37.1, z: 0}
+  m_LocalPosition: {x: -66.08, y: 38.08, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -14219,7 +14241,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.05594635, y: 1.199996, z: -10}
+  m_LocalPosition: {x: 1.3100624, y: 6.3499985, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14361,7 +14383,7 @@ Transform:
   m_GameObject: {fileID: 550543003}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.39, y: -2.63, z: 0}
+  m_LocalPosition: {x: 0.39, y: 6.35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -15354,7 +15376,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 100.1, y: 16.87}
+  m_Size: {x: 100.1, y: 21.9}
   m_EdgeRadius: 0
 --- !u!4 &997812741
 Transform:
@@ -15739,7 +15761,7 @@ Transform:
   m_GameObject: {fileID: 1901076165}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.39, y: -2.63, z: -10}
+  m_LocalPosition: {x: 0.39, y: 6.35, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
