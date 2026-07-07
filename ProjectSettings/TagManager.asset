@@ -64,6 +64,9 @@ TagManager:
   - name: Player
     uniqueID: 2455448165
     locked: 0
+  - name: NPC's
+    uniqueID: 1974028223
+    locked: 0
   - name: Foreground
     uniqueID: 1744933203
     locked: 0
