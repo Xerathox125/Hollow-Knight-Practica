@@ -40,11 +40,32 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 46321279
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Vegetation
+    uniqueID: 964715543
+    locked: 0
+  - name: Bushes
+    uniqueID: 1030536785
+    locked: 0
+  - name: Stones
+    uniqueID: 818988265
+    locked: 0
+  - name: Town
+    uniqueID: 2632945565
+    locked: 0
+  - name: Tilemap
+    uniqueID: 1969951713
+    locked: 0
   - name: Player
     uniqueID: 2455448165
+    locked: 0
+  - name: Foreground
+    uniqueID: 1744933203
     locked: 0
   m_RenderingLayers:
   - Default
