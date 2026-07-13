@@ -116,7 +116,7 @@ public class Damageable : MonoBehaviour
 
     IEnumerator FreezeTimeEffect()
     {
-        if(Time.timeScale == 0)
+        if (Time.timeScale == 0)
         {
             yield break;
         }
